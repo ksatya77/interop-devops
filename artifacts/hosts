@@ -1,6 +1,6 @@
 # BEGIN ANSIBLE MANAGED BLOCK
-10.0.1.110  mgmt
-10.0.1.111  dfsp1
-10.0.1.112  dfsp2
-10.0.1.113  cst
+10.0.15.10  mgmt
+10.0.15.11  dfsp1
+10.0.15.12  dfsp2
+10.0.15.13  cst
 # END ANSIBLE MANAGED BLOCK

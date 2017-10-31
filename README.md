@@ -19,9 +19,9 @@ Steps for building:
 Pre-requisites:
 
 1.  Vagrant
-2.  VirtualBox (minor config changes required for Windows 10 due to Hyper-V/VirtualBox incompatibility)
-3.  An ssh client (I used Git for windows to get a full ssh client)
-4.  AWS credential and config information
+2.  VirtualBox
+3.  An ssh client (Git for Windows can be used to get a full ssh client)
+4.  AWS credential and config information (only for AWS installs)
 
 Installation:
 
@@ -36,14 +36,29 @@ Local L1P install (For the installation instructions to the Amazon EC2 environme
 2.  Create a .aws sub-directory in your home directory and copy the AWS config and credential files there.  If you do not have these but only the key id and secret key id, the awscli can be installed and run to configure and create these files
 3.  Test that you have a working ssh client in the path.
 4.  Configure the network parameters in the Vagrantfile:
+    Choose Public (accessible allowable address on the same network) or Private (creates a VPN on you machine and is only accessible from that host without a proxy)
+    Public Networking Option:
     1.  Open <base_dir>/Vagrantfile in the editor of your choice.
     2.  Locate the four locations which require configuration, for example:
         ```
         ######### Update the line below to match your network settings ###########
         dfsp1_config.vm.network "public_network", ip: "192.168.0.xxx", bridge: "en0: Wi-Fi (AirPort)"
         ```
-    3.  Update the ip: entry abd bridge: entry to match the settings for the host machine running this image.
+    3.  Update the ip: entry and bridge: entry to match the settings for the host machine running this image.
         Note:  The command `/usr/local/bin/VBoxManage list bridgedifs` can be used to help find the name of the network and ip address this machine uses on that network.  Update the ip entries with four unused ip addresses on that network.
+    Private Networking Option:
+    1.  Open <base_dir>/Vagrantfile in the editor of your choice.
+    2.  Comment out the four lines from the public example and uncomment the four lines for private_network, for example:
+        ```
+        #dfsp1_config.vm.network "public_network", ip: "192.168.0.xxx", bridge: "en0: Wi-Fi (AirPort)"
+        dfsp1_config.vm.network "private_network", ip: "10.0.15.11"
+        ```
+    3.  Open <base_dir>/group_vars/all/main.xml in the editor of your choice.
+    4.  Switch the vagrant_net_type entry like below to set the private networking option:
+        ```
+        # Vagrantfile network setup (for local install only)
+        vagrant_net_type: private_network #public_network or private_network
+        ```
 5.  Run the command 'vagrant up' from the base directory
 
 Optional setup (Advanced):  The above command, without any modifiers, will install 1 Management node, 2 Financial Service Provider nodes, and 1 Central Services node with all components on each node.
