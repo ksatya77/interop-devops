@@ -1,0 +1,38 @@
+---
+    - name: Add Curator gpg key
+      apt_key:
+        url: https://packages.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+    - name: Add Curator repo
+      apt_repository:
+        repo: deb https://packages.elastic.co/curator/5/debian stable main
+        state: present
+        update_cache: yes
+
+    - name: Install Curator
+      apt:
+       name: elasticsearch-curator
+       state: present
+
+    - name: Setup the Curator configuration directory
+      file:
+        path: ~/.curator
+        state: directory
+
+    - name: copy over the Curator config
+      copy:
+        src: artifacts/curator-config.yml #check this later
+        dest: ~/.curator/curator-config.yml
+
+    - name: copy over the Curator action file
+      copy:
+        src: artifacts/curator-action.yml #check this later
+        dest: ~/.curator/action-action.yml
+
+    - name: Set curator to run hourly
+      copy:
+        src: artifacts/curator
+        dest: /etc/cron.hourly
+        force: yes
+

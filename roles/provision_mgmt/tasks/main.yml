@@ -1,0 +1,43 @@
+- name: Ensure all software and dependencies are installed
+  raw: sudo apt-get -y install "{{ item }}"
+  with_items:
+    - dos2unix
+    - python-pip
+    - python-passlib
+
+- name: Install python dependencies
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker-py
+    - awscli
+
+- name: Setup rsyslog
+  copy:
+    src: /vagrant/artifacts/rsyslog.conf
+    dest: /etc/rsyslog.conf
+
+- copy:
+    src: /vagrant/docker
+    dest: /etc/logrotate.d/docker
+
+- copy:
+    src: /etc/cron.daily/logrotate
+    dest: /etc/cron.hourly/logrotate
+
+- service:
+    name: rsyslog
+    state: restarted
+
+- name: Copy over the /etc/hosts file for the management node
+  copy:
+    src: /vagrant/artifacts/hosts
+    dest: /etc/hosts
+
+# Leave this, it is needed for people running on 8-10gb mem systems.  Uncomment as needed.
+#- name: create swapfs
+#  shell: fallocate -l 2G /swapfile; chmod 600 /swapfile; mkswap /swapfile; swapon /swapfile
+#  become: true
+
+

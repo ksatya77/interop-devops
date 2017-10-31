@@ -1,0 +1,13 @@
+/var/log/kibana {
+    daily
+    rotate 10
+    copytruncate
+    compress
+    delaycompress
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+    /bin/kill -HUP $(cat /usr/share/kibana/pid.log 2>/dev/null) 2>/dev/null
+    endscript
+}

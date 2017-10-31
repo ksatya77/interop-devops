@@ -1,0 +1,131 @@
+# Ansible playbook for deploying the
+# ilp-connector and ilp-service
+
+# Note this must be run with the CLI param --extra-vars="docker_username=... docker_password=... docker_email=..."
+
+# This must also be run with the CLI param --inventory-file=... where that points to either the hosts or hosts-qa file
+  - include_vars:
+      file: versions/{{ env }}/ilpversions.yml
+
+  - add_host:
+      name: "dfsp1"
+      groups: dfsps
+      peer_name: "dfsp2"
+      ILP_CONNECTOR_PEERS: "{{ ilp_central_ledger_prefix }}{{ dfsp2_peer }}"
+
+  - add_host:
+      name: "dfsp2"
+      groups: dfsps
+      peer_name: "dfsp1"
+      ILP_CONNECTOR_PEERS: "{{ ilp_central_ledger_prefix }}{{ dfsp1_peer }}"
+
+
+  - name: Start the ILP Service
+    become: true
+    tags:
+      - service
+    docker_container:
+      name: ilp-service
+      image: "modusbox-level1-docker.jfrog.io/ilp-service:{{v_ilp_service}}"
+      state: started
+      restart_policy: always
+      pull: yes
+      recreate: yes
+      ports:
+        - "3045:3045"
+      log_driver: syslog
+      log_options:
+        "syslog-address": "tcp://{{ log_ip }}:514"
+        "syslog-facility": "daemon"
+        "tag": "ilp-service"
+        "labels": "ilp-service"
+        "env": "ilp-service"
+      env:
+        ILP_SERVICE_PORT: 3045
+        ILP_SERVICE_ILP_PREFIX: "{{ ilp_address_neighborhood }}.{{ inventory_hostname }}."
+        ILP_SERVICE_LEDGER_ROOT: '{{ ilp_base_url }}:8088/ilp/ledger/v1/'
+        ILP_SERVICE_LEDGER_ADMIN_ACCOUNT: '{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/admin'
+        ILP_SERVICE_LEDGER_ADMIN_USERNAME: admin
+        ILP_SERVICE_LEDGER_ADMIN_PASSWORD: admin
+        ILP_SERVICE_CENTRAL_CONNECTOR_ACCOUNT: "http://{{ cst_host_name }}:3002/accounts/{{ inventory_hostname }}"
+        ILP_SERVICE_CENTRAL_CONNECTOR_PASSWORD: "{{ inventory_hostname }}"
+        ILP_SERVICE_CENTRAL_CONNECTOR_USERNAME: "{{ inventory_hostname }}"
+        ILP_SERVICE_CENTRAL_CONNECTOR_PREFIX: "{{ ilp_address_neighborhood }}.ist."
+        ILP_SERVICE_CONNECTOR_ACCOUNT: "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector"
+        ILP_SERVICE_BACKEND: "{{ ilp_base_url }}:8088/scheme/adapter/v1"
+        DEBUG: "*"
+
+  - name: Start ILP connector
+    become: true
+    tags:
+      - connector
+    docker_container:
+      name: ilp-connector
+      image: "interledger/js-ilp-connector:{{ v_ilp_connector }}"
+      state: started
+      restart_policy: always
+      recreate: yes
+      pull: yes
+      log_driver: syslog
+      log_options:
+        "syslog-address": "tcp://{{ log_ip }}:514"
+        "syslog-facility": "daemon"
+        "tag": "ilp-connector"
+        "labels": "ilp-connector"
+        "env": "ilp-connector"
+      env:
+        # make sure there is a space before the JSON value otherwise ansible will run it as python (?!?!?)
+
+        CONNECTOR_LEDGERS: >
+
+          {
+            "{{ ilp_address_neighborhood }}.{{ inventory_hostname }}.": {
+              "currency": "USD",
+              "plugin": "ilp-plugin-bells",
+              "options": {
+                "account": "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector",
+                "password": "1234",
+                "username": "{{ inventory_hostname }}-testconnector",
+                "overrideInfo": {
+                  "scale": 2
+                }
+              },
+              "overrideInfo": {
+                "minBalance": "-100000000"
+              }
+            },
+            "{{ ilp_address_neighborhood }}.ist.": {
+              "currency": "USD",
+              "plugin": "ilp-plugin-bells",
+              "options": {
+                "account": "http://{{ cst_host_name }}:3002/accounts/{{ inventory_hostname }}",
+                "password": "{{ inventory_hostname }}",
+                "username": "{{ inventory_hostname }}",
+                "overrideInfo": {
+                  "scale": 2
+                }
+              },
+              "overrideInfo": {
+                "minBalance": "-100000000"
+              }
+            }
+          }
+        CONNECTOR_ROUTES: >
+
+          [{
+            "targetPrefix": "",
+            "connectorLedger": "{{ ilp_address_neighborhood }}.ist.",
+            "connectorAccount": "{{ ilp_address_neighborhood }}.ist.{{ peer_name }}"
+          }]
+        CONNECTOR_ROUTE_BROADCAST_ENABLED: 0
+        CONNECTOR_PEERS: "{{ILP_CONNECTOR_PEERS}}"
+        CONNECTOR_ROUTE_EXPIRY: 6000000000
+        CONNECTOR_ROUTE_CLEANUP_INTERVAL: 6000000
+        CONNECTOR_MIN_MESSAGE_WINDOW: 1
+        CONNECTOR_MAX_HOLD_TIME: 60
+        CONNECTOR_BACKEND: one-to-one
+        CONNECTOR_FX_SPREAD: 0
+        CONNECTOR_SLIPPAGE: 0
+        CONNECTOR_UNWISE_USE_SAME_TRANSFER_ID: 1
+        CONNECTOR_LOG_LEVEL: trace
+        DEBUG: "*"

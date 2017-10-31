@@ -1,0 +1,11 @@
+/var/log/DockerRemote.log {
+  rotate 12
+  size=2M
+  compress
+  delaycompress
+  missingok
+  notifempty
+  postrotate
+          reload rsyslog >/dev/null 2>&1 || true
+  endscript
+}

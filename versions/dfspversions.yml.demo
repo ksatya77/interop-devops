@@ -1,0 +1,10 @@
+v_dfsp_ussd: 0.23.21
+v_dfsp_rule: 0.5.11
+v_dfsp_directory: 0.7.14
+v_dfsp_api: 0.28.26
+v_dfsp_transfer: 0.20.13
+v_dfsp_admin: 0.15.8
+v_dfsp_ledger: 1.1.18
+v_dfsp_identity: 0.9.13
+v_dfsp_subscription: 0.3.16
+v_dfsp_account: 0.9.14

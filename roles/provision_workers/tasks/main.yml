@@ -1,0 +1,49 @@
+- name: Add docker repo
+  become: true
+  shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+- name: ensure apt cache is updated
+  become: true
+  action: apt update_cache=yes
+
+- name: ensure all software and dependencies are installed
+  become: true
+  apt: 
+    name: "{{item}}"
+    force: yes
+  with_items:
+    - software-properties-common
+    - python-setuptools
+    - python-pip
+    - libpq-dev
+    - python-psycopg2
+    - docker-ce
+    - unzip
+    - ntp
+    #- openjdk-7-jre-headless
+
+- name: Install python libs
+  ignore_errors: true
+  pip:
+    name: "{{ item }}"
+    state: latest
+  become: true
+  with_items:
+    - docker-py
+    - awscli
+
+- name: Create a SG network
+  become: true
+  docker_network:
+    name: MOJALOOP_NET
+    state: present
+
+- name: Copy optional docker startup script
+  copy:
+    src: startup.sh
+    dest: ~/startup.sh
+
+# Leave this, it is needed for people running on 8-10gb mem systems.  Uncomment as needed.
+#- name: create swapfs
+#  shell: fallocate -l 2G /swapfile; chmod 600 /swapfile; mkswap /swapfile; swapon /swapfile
+#  become: true

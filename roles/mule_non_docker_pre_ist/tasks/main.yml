@@ -1,0 +1,35 @@
+# Ansible playbook for deploying the
+# ilp-connector, ilp-spsp-client-rest, and ilp-spsp-server
+# to the L1P test integration environment
+
+# Note this must be run with the CLI param --extra-vars="docker_username=... docker_password=... docker_email=..."
+---
+#  - debug:
+#      var: {{ inventory_hostname | regex_replace('dfsp') }}
+  - include_vars:
+      file: versions/{{ env }}/modusboxversions.yml
+
+  - name: Pull interop-domain from Jfrog
+    get_url:
+      url: https://modusbox.jfrog.io/modusbox/libs-release/com/l1p/interop/interop-domain/{{ v_interop_domain }}/interop-domain-{{ v_interop_domain }}.zip
+      dest: artifacts/mule_artifacts/domains/interop-domain.zip
+      url_username: "{{ mule_repo_user }}"
+      url_password: "{{ mule_repo_pass }}"
+    delegate_to: localhost
+
+  - name: Pull interop-mock-central-directory from Jfrog
+    get_url:
+      url: https://modusbox.jfrog.io/modusbox/libs-release/com/l1p/interop/interop-mock-central-directory/{{ v_interop_mock_central_directory }}/interop-mock-central-directory-{{ v_interop_mock_central_directory }}.zip
+      dest: artifacts/mule_artifacts/apps_ist/interop-mock-central-directory-{{ v_interop_mock_central_directory }}.zip
+      url_username: "{{ mule_repo_user }}"
+      url_password: "{{ mule_repo_pass }}"
+    delegate_to: localhost
+
+  - local_action:
+      module: archive
+      path:
+        - artifacts/deploy
+        - artifacts/requests
+        - artifacts/mule_artifacts
+        - artifacts/bulk
+      dest: ./mule_ist.gz

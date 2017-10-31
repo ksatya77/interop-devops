@@ -1,0 +1,232 @@
+---
+    - include_vars:
+        file: versions/{{env}}/cstversions.yml
+
+    - name: start postgres
+      docker_container:
+        name: postgres
+        image: postgres:{{ v_postgres }}
+        env:
+          POSTGRES_PASSWORD: "{{ ist_pg_pass }}"
+          POSTGRES_USER: "{{ ist_pg_user }}"
+          SERVICE_5432_NAME: 'postgres'
+        ports: 5432:5432
+        restart_policy: always
+        log_driver: syslog
+        log_options:
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: postgress
+      tags: db
+      become: yes
+
+    - name: Waiting to make sure postgres is started
+      wait_for:
+        port: 5432
+        delay: 10
+
+    - name: Create db users
+      postgresql_user:
+        login_host: '{{ postgres_ip | default("localhost") }}'
+        port: 5432
+        login_user: "{{ ist_pg_user }}"
+        login_password: "{{ ist_pg_pass }}"
+        name: "{{ item.name }}"
+        password: "{{ item.passwd }}"
+        role_attr_flags: SUPERUSER,CREATEROLE,CREATEDB,LOGIN
+        #role_attr_flags: SUPERUSER,CREATEROLE,CREATEUSER,CREATEDB,INHERIT,LOGIN,REPLICATION
+        state: present
+      tags: cst_db
+      with_items:
+        - { name: central_directory, passwd: "{{ cdir_pass }}" }
+        - { name: central_ledger, passwd: "{{ cleg_pass }}" }
+        - { name: central_end_user_registry, passwd: "{{ ceur_pass }}" }
+        - { name: sidecar, passwd: "{{ sidecar_pass }}" }
+        - { name: central_kms, passwd: "{{ ckms_pass }}" }
+
+    - name: Create central dbs
+      postgresql_db:
+        name: "{{ item.name }}"
+        login_host: '{{ postgres_ip | default("localhost") }}'
+        port: 5432
+        login_user: "{{ item.name }}"
+        owner: "{{ item.name }}"
+        login_password: "{{ item.passwd }}"
+      tags: cst_db
+      with_items:
+        - { name: central_directory, passwd: "{{ cdir_pass }}" }
+        - { name: central_ledger, passwd: "{{ cleg_pass }}" }
+        - { name: central_end_user_registry, passwd: "{{ ceur_pass }}" }
+        - { name: sidecar, passwd: "{{ sidecar_pass }}" }
+        - { name: central_kms, passwd: "{{ ckms_pass }}" }
+
+    ## Dwolla Docker Images
+    - name: start central-directory
+      docker_container:
+        name: central-directory
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-directory:{{v_central_directory}}
+        state: started
+        restart_policy: always
+        links: postgres:postgres
+        #env_file: '{{ env_path }}/central-directory-env.list'
+        log_driver: syslog
+        log_options:
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: central-directory
+        ports: 3000:3000
+        env:
+          CDIR_DATABASE_URI: 'postgres://central_directory:cVq8iFqaLuHy8jjKuA@{{ worker_host }}:5432/central_directory'
+          CDIR_HOSTNAME: 'http://{{ worker_host }}:3000'
+          CDIR_END_USER_REGISTRY_URL: 'http://{{ worker_host }}:3001'
+          CDIR_DEFAULT_DFSP: 'The second DFSP'
+          CDIR_ADMIN_KEY: 'admin'
+          CDIR_ADMIN_SECRET: 'admin'
+      become: true
+
+#    - name: start forensic-logging-sidecar1
+#      become: true
+#      docker_container:
+#        name: forensic-logging-sidecar1
+#        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/forensic-logging-sidecar:{{v_forensic_logging_sidecar}}
+#        state: started
+#        #env_file: '{{ env_path }}/forensic-logging-sidecar-env1.list'
+#        restart_policy: always
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: forensic-logging-sidecar1
+#        ports: 5678:5678
+#        env:
+#          SIDE_DATABASE_URI: 'postgres://sidecar:6dauAWcoeJuyRTFXH9@{{ worker_host }}:5432/sidecar'
+#          SIDE_KMS__URL: '{{ side_kms_url }}'
+#          SIDE_SERVICE: 'central-ledger'
+
+    - name: start central-ledger
+      docker_container:
+        name: central-ledger
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-ledger:{{v_central_ledger}}
+        state: started
+        restart_policy: always
+        #env_file: '{{ env_path }}/central-ledger-env.list'
+        links:
+          - postgres:postgres
+          #- forensic-logging-sidecar1:forensic-logging-sidecar1
+        log_driver: syslog
+        log_options:
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: central-ledger
+        ports: 3002:3000
+        env:
+          CLEDG_DATABASE_URI: 'postgres://central_ledger:cVq8iFqaLuHy8jjKuA@{{ worker_host }}:5432/central_ledger'
+          CLEDG_EXPIRES_TIMEOUT: '1800000'
+          CLEDG_HOSTNAME: 'http://{{ worker_host }}:3002'
+          CLEDG_ENABLE_BASIC_AUTH: 'true'
+          CLEDG_SIDECAR__HOST: 'forensic-logging-sidecar1'
+          CLEDG_SIDECAR__DISABLED: 'true'
+      become: true
+
+#    - name: start forensic-logging-sidecar2
+#      docker_container:
+#        name: forensic-logging-sidecar2
+#        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/forensic-logging-sidecar:{{v_forensic_logging_sidecar}}
+#        state: started
+#        #env_file: '{{ env_path }}/forensic-logging-sidecar-env2.list'
+#        restart_policy: always
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: forensic-logging-sidecar2
+#        ports: 5679:5678
+#        env:
+#          SIDE_DATABASE_URI: 'postgres://sidecar:6dauAWcoeJuyRTFXH9@{{ worker_host }}:5432/sidecar'
+#          SIDE_KMS__URL: '{{ side_kms_url }}'
+#          SIDE_SERVICE: 'central-ledger'
+#      become: true
+
+    - name: start central-ledger-admin
+      docker_container:
+        name: central-ledger-admin
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-ledger-admin:{{v_central_ledger_admin}}
+        state: started
+        #env_file: '{{ env_path }}/central-ledger-admin-env.list'
+        restart_policy: always
+        links:
+          - postgres:postgres
+          #- forensic-logging-sidecar2:forensic-logging-sidecar2
+        log_driver: syslog
+        log_options:
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: central-ledger-admin
+        ports: 3004:3001
+        env:
+          CLEDG_DATABASE_URI: 'postgres://central_ledger:cVq8iFqaLuHy8jjKuA@{{ worker_host }}:5432/central_ledger'
+          CLEDG_ENABLE_BASIC_AUTH: 'true'
+          CLEDG_EXPIRES_TIMEOUT: '1800000'
+          CLEDG_HOSTNAME: 'http://{{ worker_host }}:3002'
+          CLEDG_SIDECAR__HOST: 'forensic-logging-sidecar2'
+          CLEDG_SIDECAR__DISABLED: 'true'
+      become: true
+
+    - name: start central-end-user-registry
+      docker_container:
+        name: central-end-user-registry
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-end-user-registry:{{v_central_end_user_registry}}
+        state: started
+        restart_policy: always
+        links:
+          - postgres:postgres
+        #env_file: '{{ env_path }}/central-end-user-registry-env.list'
+        log_driver: syslog
+        log_options:
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: central-end-user-registry
+        ports: 3001:3001
+        env:
+          CREG_DATABASE_URI: 'postgres://central_end_user_registry:cVq8iFqaLuHy8jjKuA@{{ worker_host }}:5432/central_end_user_registry'
+          CREG_HOSTNAME: 'http://{{ worker_host }}:3001'
+      become: true
+
+    - name: start central-fraud-sharing
+      docker_container:
+        name: central-fraud-sharing
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-fraud-sharing:{{v_central_fraud_sharing}}
+        state: started
+        #env_file: '{{ env_path }}/central-fraud-sharing-env.list'
+        restart_policy: always
+        links:
+          - postgres:postgres
+        log_driver: syslog
+        log_options:
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: central-fraud-sharing
+        ports: 3003:3002
+        env:
+          FSHARE_HOST_NAME: 'http://{{ worker_host }}'
+      become: true
+
+    - name: start central-hub
+      docker_container:
+        name: central-hub
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-hub:{{v_central_hub}}
+        state: started
+        restart_policy: always
+        links:
+          - postgres:postgres
+        log_driver: syslog
+        log_options:
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: central-hub
+        ports: 4001:4001
+        env:
+          CHUB_ADMIN_API_URL: 'http://{{ worker_host }}:3004'
+          CHUB_API_URL: 'http://{{ worker_host }}:3004'
+          CHUB_HOSTNAME: 'http://{{ worker_host }}:4001'
+      become: true

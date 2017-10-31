@@ -1,0 +1,6 @@
+- known_hosts:
+    path: '~/.ssh/known_hosts'
+    name: '{{ item.public_ip_address }}'
+    state: absent
+  with_items: '{{ ec2instances.instances }}'
+  delegate_to: localhost

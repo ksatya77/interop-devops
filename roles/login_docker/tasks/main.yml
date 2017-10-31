@@ -1,0 +1,21 @@
+- name: Docker login to JFrog
+  docker_login:
+    registry: "modusbox-level1-docker.jfrog.io"
+    username: "{{ mule_repo_user }}"
+    password: "{{ mule_repo_pass }}"
+    reauthorize: yes
+  become: true
+
+- name: Docker login to JFrog Release
+  docker_login:
+    registry: "modusbox-level1-docker-release.jfrog.io"
+    username: "{{ mule_repo_user }}"
+    password: "{{ mule_repo_pass }}"
+    reauthorize: yes
+  become: true
+
+- name: Create a docker network
+  become: true
+  docker_network:
+    name: MOJALOOP_NET
+    state: present

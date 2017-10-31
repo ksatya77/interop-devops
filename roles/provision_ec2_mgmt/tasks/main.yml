@@ -1,0 +1,63 @@
+- name: add docker gpg key
+  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+- name: add docker repo
+  shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu trusty stable"
+
+- name: ensure apt cache is updated
+  action: apt update_cache=yes
+
+- name: Ensure all software and dependencies are installed
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - dos2unix
+    #- python-pip
+    - python-setuptools
+    - emacs24
+    - docker-ce
+    - python-psycopg2
+    - sshpass
+
+- name: Install pip
+  easy_install:
+     name: pip
+     state: latest
+
+- name: Install python dependencies
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - docker-py
+    - awscli
+    - passlib
+
+- name: Setup rsyslog
+  copy:
+    src: artifacts/rsyslog.conf
+    dest: /etc/rsyslog.conf
+
+- copy:
+    src: artifacts/docker
+    dest: /etc/logrotate.d/
+    force: yes
+
+- copy:
+    remote_src: yes
+    src: /etc/cron.daily/logrotate
+    dest: /etc/cron.daily
+    force: yes
+
+- service:
+    name: rsyslog
+    state: restarted
+
+- name: Copy over the /etc/hosts file for the management node
+  copy:
+    src: artifacts/etchosts
+    dest: /etc/hosts
+
+- name: Sync ntp
+  command: ntpdate -s ntp.ubuntu.com

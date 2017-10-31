@@ -1,0 +1,78 @@
+- name: Remove MuleEnv Artifacts
+  file:
+    path: artifacts/mule_artifacts/conf/mule-l1p.properties.{{ item }}
+    state: absent
+  delegate_to: localhost
+  with_items:
+    - 1
+    - 2
+
+- file:
+    path: artifacts/mule_artifacts/conf/adapter-mapping.properties.{{ item }}
+    state: absent
+  delegate_to: localhost
+  with_items:
+    - 1
+    - 2
+
+- file:
+    path: artifacts/mule_artifacts/conf_ist/mule-l1p.properties.cst
+    state: absent
+  delegate_to: localhost
+
+- name: Remove local Mule apps files
+  find:
+    paths: "artifacts/mule_artifacts/apps/"
+    pattern: "*.zip"
+  delegate_to: localhost
+  register: results
+
+- file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items: "{{ results['files'] }}"
+  delegate_to: localhost
+
+- name: Remove local Mule apps files
+  find:
+    paths: "artifacts/mule_artifacts/apps_ist/"
+    pattern: "*.zip"
+  delegate_to: localhost
+  register: results
+
+- file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items: "{{ results['files'] }}"
+  delegate_to: localhost
+
+- name: Remove local Mule domain files
+  find:
+    paths: "artifacts/mule_artifacts/domains/"
+    pattern: "*.zip"
+  delegate_to: localhost
+  register: results
+
+- file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items: "{{ results['files'] }}"
+  delegate_to: localhost
+
+- name: Remove local etchosts file
+  file:
+    path: artifacts/etchosts
+    state: absent
+  delegate_to: localhost
+
+- name: Remove local Mule archive
+  file:
+    path: ./mule.gz
+    state: absent
+  delegate_to: localhost
+
+- name: Remove local IST Mule archive
+  file:
+    path: ./mule_ist.gz
+    state: absent
+  delegate_to: localhost

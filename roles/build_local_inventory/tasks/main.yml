@@ -1,0 +1,39 @@
+- shell: "grep -i {{ vagrant_net_type }} Vagrantfile | grep -i mgmt | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
+  register: local_mgmt
+
+- debug:
+    var: local_mgmt
+
+- shell: "grep -i {{ vagrant_net_type }}  Vagrantfile | grep -i dfsp1 | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
+  register: local_dfsp1
+
+- shell: "grep -i {{ vagrant_net_type }}  Vagrantfile | grep -i dfsp2 | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
+  register: local_dfsp2
+
+- shell: "grep -i {{ vagrant_net_type }}  Vagrantfile | grep -i cst | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
+  register: local_ist
+
+- name: Configure local inventory file
+  local_action:
+    module: blockinfile
+    create: yes
+    dest: "artifacts/hosts"
+    block: |
+      {{ local_mgmt.stdout }}  mgmt
+      {{ local_dfsp1.stdout }}  dfsp1
+      {{ local_dfsp2.stdout }}  dfsp2
+      {{ local_ist.stdout }}  cst
+
+- name: Build host groups
+  add_host:
+    hostname: '{{ item.host }}'
+    groups: '{{ item.group }}'
+    ansible_host: '{{ item.ip }}'
+    ansible_user: '{{ item.ansible_user }}'
+    peer_name: '{{ item.peer_name }}'
+  with_items: 
+    - {host: 'mgmt', ip: '{{ local_mgmt.stdout }}', group: 'mgmts', ansible_user: 'vagrant', peer_name: 'mgmt'}
+    - {host: 'dfsp1', ip: '{{ local_dfsp1.stdout }}', group: 'dfsps', ansible_user: 'vagrant', peer_name: 'dfsp2'}
+    - {host: 'dfsp2', ip: '{{ local_dfsp2.stdout }}', group: 'dfsps', ansible_user: 'vagrant', peer_name: 'dfsp1'}
+    - {host: 'cst', ip: '{{ local_ist.stdout }}', group: 'csts', ansible_user: 'vagrant', peer_name: 'cst'}
+  delegate_to: localhost

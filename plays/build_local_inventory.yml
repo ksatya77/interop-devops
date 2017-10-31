@@ -1,0 +1,6 @@
+- name: Build the Vagrant inventory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  roles:
+    - build_local_inventory

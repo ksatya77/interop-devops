@@ -1,0 +1,45 @@
+- name: Remove public key
+  file:
+     path: ~/.ssh/id_rsa
+     state: absent
+
+- name: Generate new key
+  shell: cat /dev/zero | ssh-keygen -t rsa -q -N "" -f ~/.ssh/id_rsa
+
+- name: Setup known_hosts file #fix this to pull from inventory
+  shell: ssh-keyscan mgmt1 dfsp1 dfsp2 cst1 >> ~/.ssh/known_hosts
+
+#- name: Force ssh initial passwd auth
+#  shell: /usr/bin/sshpass -p vagrant ansible all -m ping --ask-pass
+
+#- name: Send keys to hosts
+#  shell: /usr/bin/sshpass -p vagrant ansible-playbook ~/ssh-addkey.yml --ask-pass
+
+#- name: setup aws credential path
+#  become: false
+#  file: path=~/.aws state=directory
+
+#- name: copy over the aws configuration file
+#  become: false
+#  copy:
+#    src: .aws/config
+#    dest: ~/.aws/config
+#    directory_mode: yes
+
+#- name: copy over the aws credential file
+#  become: false
+#  copy:
+#    src: .aws/credentials
+#    dest: ~/.aws/credentials
+#    directory_mode: yes
+
+
+#- name: copy configs into ~ (from inside the mgmt node)
+#  synchronize:
+#    src: ~
+#    dest: /home/
+
+#- name:  Repair shell scripts in home
+#  shell: find ~/scripts -name '*.sh' -print0 | xargs -0 dos2unix
+
+

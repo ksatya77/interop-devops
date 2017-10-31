@@ -1,0 +1,59 @@
+        }
+
+        location /dfsp1/ussd/ {
+            proxy_pass http://10.0.15.11:8019/ussd/;
+        }
+
+        location /dfsp2/ussd/ {
+            proxy_pass http://10.0.15.12:8019/ussd/;
+        }
+
+        location /dfsp1/ledgerapi/ {
+            proxy_pass http://10.0.15.11:8014/ledger/transfers;
+        }
+
+        location /dfsp2/ledgerapi/ {
+            proxy_pass http://10.0.15.12:8014/ledger/transfers;
+        }
+
+        location /dfsp1/admin/ {
+            proxy_pass http://10.0.15.11:8020/;
+        }
+
+        location /dfsp2/admin/ {
+            proxy_pass http://10.0.15.12:8020/;
+        }
+
+        location /cst/admin/ {
+            proxy_pass http://10.0.15.13:3001;
+        }
+
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /accounts                      List all accounts
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   POST             /accounts                      Create an account
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   PUT              /accounts/{name}               Update account
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /accounts/{name}               View account details
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   POST             /auth_token                    Get a token for admin authentication
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   POST             /charges                       Create a new charge
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /charges                       List all charges
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   PUT              /charges/{name}                Update a charge
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /documentation                 
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /health                        Status of ledger admin api
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /permissions                   List available permissions
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   POST             /roles                         Create a new role
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /roles                         List all roles
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   DELETE           /roles/{id}                    Delete role
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   PUT              /roles/{id}                    Update a role
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /swagger.json                  
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /swaggerui/{path*}             
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /swaggerui/extend.js           
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   POST             /users                         Create new user
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /users                         List users
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   DELETE           /users/{id}                    Delete user
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   PUT              /users/{id}                    Update user details
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /users/{id}                    View users details
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   POST             /users/{id}/roles              Update users roles
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   GET              /users/{id}/roles              Get users roles
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   POST             /webhooks/reject-expired-tokens Reject expired tokens
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   POST             /webhooks/reject-expired-transfers Reject expired transfers
+2017-08-11T00:59:40+00:00 ip-172-31-14-147.ec2.internal central-ledger-admin[7559]:   POST             /webhooks/settle-transfers     Settle fulfilled transfers
+

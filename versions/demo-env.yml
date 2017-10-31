@@ -1,0 +1,200 @@
+# Application Versions
+v_central_directory: v0.14.0
+v_central_ledger: v1.81.0
+v_central_end_user_registry: v0.9.0
+v_dfsp_ussd: 0.20.2
+v_dfsp_rule: 0.4.2
+v_dfsp_directory: 0.6.2
+v_dfsp_api: 0.24.4
+v_dfsp_transfer: 0.18.8
+v_dfsp_admin: 0.11.3
+v_dfsp_ledger: 0.20.0
+v_dfsp_identity: 0.8.7
+v_dfsp_subscription: 0.3.6
+v_dfsp_account: 0.6.3
+v_ilp_spsp_client_rest: v5.0.2
+v_ilp_spsp_server: v5.0.1
+v_js_ilp_connector: v17.1.0
+v_interop_docker: latest
+
+#ILP Environment Variables
+base_url: "http://{{ hostvars[inventory_hostname].ansible_host }}"
+ilp_address_neighborhood: "levelone"
+ILP_LEDGER_ROOT: "{{ base_url }}:8088/ilp/ledger/v1/"
+ILP_LEDGER_ADMIN_ACCOUNT: "{{ ILP_LEDGER_ROOT }}accounts/admin"
+ILP_LEDGER_ADMIN_USERNAME: admin
+ILP_LEDGER_ADMIN_PASSWORD: admin
+ILP_LEDGER_PREFIX: "{{ ilp_address_neighborhood}}.{{ inventory_hostname }}."
+ILP_SPSP_SERVER_BACKEND: "{{ base_url }}:8088/spsp/backend"
+ILP_CLIENT_INVOICE_URL_TEMPLATE: "{{ base_url }}:3043/v1/receivers/invoices/{invoiceId}"
+ILP_CENTRAL_LEDGER_PREFIX: "{{ ilp_address_neighborhood }}.ist."
+ILP_CONNECTOR: "{{ ilp_address_neighborhood }}.{{ inventory_hostname }}.{{ inventory_hostname }}-testconnector"
+ILP_CONNECTOR_ACCOUNT: "{{ base_url }}:8088/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector"
+ILP_CONNECTOR_PASSWORD: "1234"
+ILP_CONNECTOR_CENTRAL_LEDGER_ACCOUNT: "http://{{ hostvars.cst1.ansible_host }}:3002/accounts/{{ inventory_hostname }}"
+ILP_CONNECTOR_CENTRAL_LEDGER_PASSWORD: "{{ inventory_hostname }}"
+ILP_CONNECTOR_PEERS: "{{ ILP_CENTRAL_LEDGER_PREFIX }}{{ peer_name }}"
+CURRENCY: USD
+
+# CST Environment Variables
+CDIR_DATABASE_URI=postgres://central_directory:cVq8iFqaLuHy8jjKuA@172.17.0.1:5432/central_directory
+CDIR_HOSTNAME=http://172.17.0.1:3000
+CDIR_END_USER_REGISTRY_URL=http://172.17.0.1:3001
+CREG_DATABASE_URI=postgres://central_end_user_registry:cVq8iFqaLuHy8jjKuA@172.17.0.1:5432/central_end_user_registry
+CREG_HOSTNAME=http://172.17.0.1:3001
+CLEDG_DATABASE_URI=postgres://central_ledger:cVq8iFqaLuHy8jjKuA@ec2-35-164-236-164.us-west-2.compute.amazonaws.com:5432/central_ledger
+CLEDG_EXPIRES_TIMEOUT=1800000
+CLEDG_HOSTNAME=http://central-ledger-1139971789.us-west-2.elb.amazonaws.comCLEDG_DATABASE_URI=postgres://central_ledger:cVq8iFqaLuHy8jjKuA@172.17.0.1:5432/central_ledger
+CLEDG_EXPIRES_TIMEOUT=1800000
+CLEDG_HOSTNAME=http://172.17.0.1:3002
+
+#DFSP Environment Variables
+SERVICE_30020_NAME=dfsp-admin
+SERVICE_80_NAME=dfsp-admin
+SERVICE_8020_NAME=dfsp-admin
+ut_dfsp_admin_uat_api__url=http://dfsp-api:8010
+ut_dfsp_admin_uat_identity__url=http://dfsp-identity:8012
+UT_ENV=uat
+SERVICE_30011_NAME=dfsp-directory
+SERVICE_8011_NAME=dfsp-directory
+ut_dfsp_directory_dev_db__create__password=dfsppass
+ut_dfsp_directory_dev_db__create__user=dfspadmin
+ut_dfsp_directory_dev_db__db__database=dfsp-directory
+ut_dfsp_directory_dev_db__db__password=dfsppass
+ut_dfsp_directory_dev_db__db__user=dfsp-directory
+SERVICE_30019_NAME=dfsp-ussd
+SERVICE_8019_NAME=dfsp-ussd
+SERVICE_8080_NAME=dfsp-ussd
+ut_dfsp_ussd_dev_api__url=http://dfsp-api:8010
+ut_dfsp_ussd_dev_identity__url=http://dfsp-identity:8012
+SERVICE_30009_NAME=dfsp-account
+SERVICE_8009_NAME=dfsp-account
+ut_dfsp_account_dev_db__create__password=dfsppass
+ut_dfsp_account_dev_db__create__user=dfspadmin
+ut_dfsp_account_dev_db__db__database=dfsp1-account
+ut_dfsp_account_dev_db__db__password=dfsppass
+ut_dfsp_account_dev_db__db__user=dfsp1.account
+SERVICE_30010_NAME=dfsp-api
+SERVICE_8010_NAME=dfsp-api
+ut_dfsp_api_dev_account__url=http://dfsp-account:8009
+ut_dfsp_api_dev_bulk__url=http://dfsp-transfer:8018
+ut_dfsp_api_dev_cluster=dfsp1-test
+ut_dfsp_api_dev_directory__url=http://dfsp-directory:8011
+ut_dfsp_api_dev_identity__url=http://dfsp-identity:8012
+ut_dfsp_api_dev_ledger__url=http://dfsp-ledger:8014
+ut_dfsp_api_dev_notification__url=http://dfsp-notification:8015
+ut_dfsp_api_dev_rule__url=http://dfsp-rule:8016
+ut_dfsp_api_dev_subscription__url=http://dfsp-subscription:8017
+ut_dfsp_api_dev_transfer__url=http://dfsp-transfer:8018
+#ut_dfsp_api_dev_ist__url=http://interop-docker:8088/directory/v1
+#ut_dfsp_api_dev_spsp__url=http://interop-docker:8088/spsp/client/v1
+#ut_dfsp_api_dev_ist__url=http://172.17.0.1:8088/directory/v1
+#ut_dfsp_api_dev_spsp__url=http://172.17.0.1:8088/spsp/client/v1
+SERVICE_30012_NAME=dfsp-identity
+SERVICE_8012_NAME=dfsp-identity
+ut_dfsp_identity_dev_api__url=http://dfsp-api:8010
+ut_dfsp_identity_dev_db__create__password=dfsppass
+ut_dfsp_identity_dev_db__create__user=dfspadmin
+ut_dfsp_identity_dev_db__db__database=dfsp1-identity
+ut_dfsp_identity_dev_db__db__password=dfsppass
+ut_dfsp_identity_dev_db__db__user=dfsp1.identity
+SERVICE_30014_NAME=dfsp-ledger
+SERVICE_8014_NAME=dfsp-ledger
+ut_dfsp_ledger_dev_db__create__password=dfsppass
+ut_dfsp_ledger_dev_db__create__user=dfspadmin
+ut_dfsp_ledger_dev_db__db__database=dfsp1-ledger
+ut_dfsp_ledger_dev_db__db__password=dfsppass
+ut_dfsp_ledger_dev_db__db__user=dfsp1.ledger
+ut_dfsp_ledger_dev_httpserver__baseUrl=http://dfsp1:8014/ledger
+SERVICE_30016_NAME=dfsp-rule
+SERVICE_8016_NAME=dfsp-rule
+ut_dfsp_rule_dev_db__create__password=dfsppass
+ut_dfsp_rule_dev_db__create__user=dfspadmin
+ut_dfsp_rule_dev_db__db__database=dfsp1-rule
+ut_dfsp_rule_dev_db__db__password=dfsppass
+ut_dfsp_rule_dev_db__db__user=dfsp1.rule
+SERVICE_30017_NAME=dfsp-subscription
+SERVICE_8017_NAME=dfsp-subscription
+ut_dfsp_subscription_dev_db__create__password=dfsppass
+ut_dfsp_subscription_dev_db__create__user=dfspadmin
+ut_dfsp_subscription_dev_db__db__database=dfsp1-subscription
+ut_dfsp_subscription_dev_db__db__password=dfsppass
+ut_dfsp_subscription_dev_db__db__user=dfsp1.subscription
+SERVICE_30018_NAME=dfsp-transfer
+SERVICE_8018_NAME=dfsp-transfer
+ut_dfsp_transfer_dev_db__create__password=dfsppass
+ut_dfsp_transfer_dev_db__create__user=dfspadmin
+ut_dfsp_transfer_dev_db__db__database=dfsp1-transfer
+ut_dfsp_transfer_dev_db__db__password=dfsppass
+ut_dfsp_transfer_dev_db__db__user=dfsp1.transfer
+SERVICE_30019_NAME=dfsp-ussd
+SERVICE_8019_NAME=dfsp-ussd
+SERVICE_8080_NAME=dfsp-ussd
+ut_dfsp_ussd_dev_api__url=http://dfsp-api:8010
+ut_dfsp_ussd_dev_identity__url=http://dfsp-identity:8012
+SERVICE_30009_NAME=dfsp-account
+SERVICE_8009_NAME=dfsp-account
+ut_dfsp_account_dev_db__create__password=dfsppass
+ut_dfsp_account_dev_db__create__user=dfspadmin
+ut_dfsp_account_dev_db__db__database=dfsp2-account
+ut_dfsp_account_dev_db__db__password=dfsppass
+ut_dfsp_account_dev_db__db__user=dfsp2.account
+SERVICE_30010_NAME=dfsp-api
+SERVICE_8010_NAME=dfsp-api
+ut_dfsp_api_dev_account__url=http://dfsp-account:8009
+ut_dfsp_api_dev_bulk__url=http://dfsp-transfer:8018
+ut_dfsp_api_dev_cluster=dfsp2-test
+ut_dfsp_api_dev_directory__url=http://dfsp-directory:8011
+ut_dfsp_api_dev_identity__url=http://dfsp-identity:8012
+ut_dfsp_api_dev_ledger__url=http://dfsp-ledger:8014
+ut_dfsp_api_dev_notification__url=http://dfsp-notification:8015
+ut_dfsp_api_dev_rule__url=http://dfsp-rule:8016
+ut_dfsp_api_dev_subscription__url=http://dfsp-subscription:8017
+ut_dfsp_api_dev_transfer__url=http://dfsp-transfer:8018
+ut_dfsp_api_dev_ist__url=http://dfsp2:8088/directory/v1
+ut_dfsp_api_dev_spsp__url=http://dfsp2:8088/spsp/client/v1
+SERVICE_30012_NAME=dfsp-identity
+SERVICE_8012_NAME=dfsp-identity
+ut_dfsp_identity_dev_api__url=http://dfsp-api:8010
+ut_dfsp_identity_dev_db__create__password=dfsppass
+ut_dfsp_identity_dev_db__create__user=dfspadmin
+ut_dfsp_identity_dev_db__db__database=dfsp2-identity
+ut_dfsp_identity_dev_db__db__password=dfsppass
+ut_dfsp_identity_dev_db__db__user=dfsp2.identity
+SERVICE_30014_NAME=dfsp-ledger
+SERVICE_8014_NAME=dfsp-ledger
+ut_dfsp_ledger_dev_db__create__password=dfsppass
+ut_dfsp_ledger_dev_db__create__user=dfspadmin
+ut_dfsp_ledger_dev_db__db__database=dfsp2-ledger
+ut_dfsp_ledger_dev_db__db__password=dfsppass
+ut_dfsp_ledger_dev_db__db__user=dfsp2.ledger
+ut_dfsp_ledger_dev_httpserver__baseUrl=http://dfsp2:8014/ledger
+SERVICE_30016_NAME=dfsp-rule
+SERVICE_8016_NAME=dfsp-rule
+ut_dfsp_rule_dev_db__create__password=dfsppass
+ut_dfsp_rule_dev_db__create__user=dfspadmin
+ut_dfsp_rule_dev_db__db__database=dfsp2-rule
+ut_dfsp_rule_dev_db__db__password=dfsppass
+ut_dfsp_rule_dev_db__db__user=dfsp2.rule
+SERVICE_30017_NAME=dfsp-subscription
+SERVICE_8017_NAME=dfsp-subscription
+ut_dfsp_subscription_dev_db__create__password=dfsppass
+ut_dfsp_subscription_dev_db__create__user=dfspadmin
+ut_dfsp_subscription_dev_db__db__database=dfsp2-subscription
+ut_dfsp_subscription_dev_db__db__password=dfsppass
+ut_dfsp_subscription_dev_db__db__user=dfsp2.subscription
+SERVICE_30018_NAME=dfsp-transfer
+SERVICE_8018_NAME=dfsp-transfer
+ut_dfsp_transfer_dev_db__create__password=dfsppass
+ut_dfsp_transfer_dev_db__create__user=dfspadmin
+ut_dfsp_transfer_dev_db__db__database=dfsp2-transfer
+ut_dfsp_transfer_dev_db__db__password=dfsppass
+ut_dfsp_transfer_dev_db__db__user=dfsp2.transfer
+SERVICE_30019_NAME=dfsp-ussd
+SERVICE_8019_NAME=dfsp-ussd
+SERVICE_8080_NAME=dfsp-ussd
+ut_dfsp_ussd_dev_api__url=http://dfsp-api:8010
+ut_dfsp_ussd_dev_identity__url=http://dfsp-identity:8012
+POSTGRES_PASSWORD=dfsppass
+POSTGRES_USER=dfspadmin
+SERVICE_5432_NAME=postgres

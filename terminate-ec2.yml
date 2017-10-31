@@ -1,0 +1,55 @@
+---
+  - hosts: localhost
+    connection: local
+    gather_facts: False
+    tags: provisioning
+    # Necessary Variables for creating/provisioning the EC2 Instance
+    vars:
+      aws_access_key: '{{ lookup("env", "AWS_ACCESS_KEY") }}'
+      aws_secret_key: '{{ lookup("env", "AWS_SECRET_ACCESS_KEY") }}'
+      #instance_type: t2.micro
+      instance_type: m4.large
+      volumes:
+        - device_name: /dev/xvda
+          volume_type: gp2
+          volume_size: 30
+      security_group: launch-wizard-3 # Change the security group name here
+      security_group_id: sg-b93036de
+      #image: ami-5ec1673e # Change the AMI, from which you want to launch the server Amazon Linux
+      #image: ami-7c22b41c # Change the AMI, from which you want to launch the server Ubuntu
+      image: ami-1da8f27d # Ubuntu in us-west-1
+      region: us-east-2 # Change the Region
+      #region: us-west-1 # Change the Region
+      keypair: interop-dev1 # Change the keypair name
+      #vpc_subnet_id: subnet-a657b3fe #1a
+      #vpc_subnet_id: subnet-be345fc8 #2a
+      #vpc_subnet_id: subnet-3963305d #2b
+      #vpc_subnet_id: subnet-95b207cd #2c
+      count: 2
+      name_tag: jmp-test
+
+    tasks:
+
+    - name: Look for EC2 instances
+      ec2_remote_facts:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ region }}"
+        filters:
+          'tag:environment': '{{ name_tag }}'
+          instance-state-name: running
+      register: ec2instances
+      delegate_to: localhost
+
+    - debug:
+        var: ec2instances
+
+    - name: Remove EC2 instances
+      ec2:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ region }}"
+        instance_ids: ['{{ item.id }}']
+        wait: no
+        state: absent
+      with_items: '{{ ec2instances.instances }}'

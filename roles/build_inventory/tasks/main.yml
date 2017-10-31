@@ -1,0 +1,35 @@
+- name: Get subnet facts
+  ec2_vpc_subnet_facts:
+    region: "{{ ec2_region }}"
+    filters:
+      'tag:Name': Internal Subnet
+  register: subnet
+  delegate_to: localhost
+
+- name: Look for EC2 instances
+  ec2_remote_facts:
+    region: "{{ ec2_region }}"
+    filters:
+      'tag:environment': '{{ name_tag }}'
+      instance-state-name: running
+  register: ec2instances
+  delegate_to: localhost
+
+- name: Build host groups
+  add_host:
+    hostname: '{{ item.tags.L1Ptype }}{{ item.ami_launch_index|int + 1 }}'
+    ansible_hostname: '{{ item.tags.L1Ptype }}{{ item.ami_launch_index|int + 1 }}'
+    ansible_host: '{{ item.public_ip_address }}'
+    ansible_user: 'ubuntu'
+    peer_name: '{{ item.tags.L1Ptype }}{{ item.ami_launch_index|int + 1 }}_peer'
+    ansible_ssh_private_key_file: '~/{{ keypair }}.pem'
+    groups: '{{ item.tags.role }}'
+    private_ip: '{{ item.private_ip_address }}'
+    instance_id: '{{ item.id }}'
+    ec2_facts: '{{ item }}'
+  when: subnet.subnets.count > 0
+  changed_when: no
+  no_log: yes
+  with_items: '{{ ec2instances.instances }}'
+  register: hostlist
+  delegate_to: localhost

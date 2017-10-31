@@ -1,0 +1,302 @@
+---
+    - include_vars:
+        file: versions/{{ env }}/dfspversions.yml
+
+    - name: start postgres
+      become: true
+      docker_container:
+        name: postgres
+        image: postgres:{{ v_postgres }}
+        restart_policy: always
+        networks:
+          - name: MOJALOOP_NET
+        env:
+          POSTGRES_PASSWORD: "{{ dfsp_pg_pass }}"
+          POSTGRES_USER: "{{ dfsp_pg_user }}"
+          SERVICE_5432_NAME: 'postgres'
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: postgres
+        ports: 5432:5432
+ 
+    - name: start dfsp-ussd
+      become: true
+      docker_container:
+        name: dfsp-ussd
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-ussd:{{v_dfsp_ussd}}
+        restart_policy: always
+        state: started
+        networks:
+          - name: MOJALOOP_NET
+        env:
+          SERVICE_30019_NAME: 'dfsp-ussd'
+          SERVICE_8019_NAME: 'dfsp-ussd'
+          SERVICE_8080_NAME: 'dfsp-ussd'
+          ut_dfsp_ussd_dev_api__url: 'http://dfsp-api:8010'
+          ut_dfsp_ussd_dev_identity__url: 'http://dfsp-identity:8012'
+        links: postgres:postgres
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-ussd
+        ports: 
+          - 30019:30019
+          - 8019:8019
+          - 8080:8080
+
+    - name: start dfsp-rule
+      become: true
+      docker_container:
+        name: dfsp-rule
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-rule:{{v_dfsp_rule}}
+        restart_policy: always
+        state: started
+        networks:
+          - name: MOJALOOP_NET
+        env:
+          SERVICE_30016_NAME: 'dfsp-rule'
+          SERVICE_8016_NAME: 'dfsp-rule'
+          ut_dfsp_rule_dev_db__create__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_rule_dev_db__create__user: "{{ dfsp_pg_user }}"
+          ut_dfsp_rule_dev_db__db__database: '{{ inventory_hostname }}-rule'
+          ut_dfsp_rule_dev_db__db__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_rule_dev_db__db__user: '{{ inventory_hostname }}.rule'
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-rule
+        links: postgres:postgres
+        ports: 
+          - 30016:30016
+          - 8016:8016
+
+    - name: start dfsp-directory
+      become: true
+      docker_container:
+        name: dfsp-directory
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-directory:{{v_dfsp_directory}}
+        restart_policy: always
+        state: started
+        networks:
+          - name: MOJALOOP_NET
+        env:
+          SERVICE_30011_NAME: 'dfsp-directory'
+          SERVICE_8011_NAME: 'dfsp-directory'
+          ut_dfsp_directory_dev_db__create__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_directory_dev_db__create__user: "{{ dfsp_pg_user }}"
+          ut_dfsp_directory_dev_db__db__database: 'dfsp-directory'
+          ut_dfsp_directory_dev_db__db__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_directory_dev_db__db__user: 'dfsp-directory'
+        links: postgres:postgres
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-directory
+        ports: 
+          - 30011:30011
+          - 8011:8011
+
+    - name: start dfsp-api
+      become: true
+      docker_container:
+        name: dfsp-api
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-api:{{v_dfsp_api}}
+        restart_policy: always
+        state: started
+        env:
+          SERVICE_30010_NAME: 'dfsp-api'
+          SERVICE_8010_NAME: 'dfsp-api'
+          ut_dfsp_api_dev_account__url: 'http://dfsp-account:8009'
+          ut_dfsp_api_dev_bulk__url: 'http://dfsp-transfer:8018'
+          ut_dfsp_api_dev_cluster: '{{ inventory_hostname }}-test'
+          ut_dfsp_api_dev_directory__url: 'http://dfsp-directory:8011'
+          ut_dfsp_api_dev_identity__url: 'http://dfsp-identity:8012'
+          ut_dfsp_api_dev_ledger__url: 'http://dfsp-ledger:8014'
+          ut_dfsp_api_dev_notification__url: 'http://dfsp-notification:8015'
+          ut_dfsp_api_dev_rule__url: 'http://dfsp-rule:8016'
+          ut_dfsp_api_dev_subscription__url: 'http://dfsp-subscription:8017'
+          ut_dfsp_api_dev_transfer__url: 'http://dfsp-transfer:8018'
+          ut_dfsp_api_dev_ist__key: '{{ inventory_hostname }}'
+          ut_dfsp_api_dev_ist__secret: '{{ inventory_hostname }}'
+          ut_dfsp_api_dev_ist__url: 'http://{{ api_hostname }}:8088/directory/v1'
+          ut_dfsp_api_dev_spsp__url: 'http://{{ api_hostname }}:8088/scheme/adapter/v1'
+        networks:
+          - name: MOJALOOP_NET
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-api
+        links: postgres:postgres
+        ports: 
+          - 30010:30010
+          - 8010:8010
+
+    - name: start dfsp-transfer
+      become: true
+      docker_container:
+        name: dfsp-transfer
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-transfer:{{v_dfsp_transfer}}
+        restart_policy: always
+        state: started
+        env:
+          SERVICE_30018_NAME: 'dfsp-transfer'
+          SERVICE_8018_NAME: 'dfsp-transfer'
+          ut_dfsp_transfer_dev_db__create__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_transfer_dev_db__create__user: "{{ dfsp_pg_user }}"
+          ut_dfsp_transfer_dev_db__db__database: '{{ inventory_hostname }}-transfer'
+          ut_dfsp_transfer_dev_db__db__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_transfer_dev_db__db__user: '{{ inventory_hostname }}.transfer'
+        networks:
+          - name: MOJALOOP_NET
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-transfer
+        links: postgres:postgres
+        ports: 
+          - 30018:30018
+          - 8018:8018
+
+    - name: start dfsp-admin
+      become: true
+      docker_container:
+        name: dfsp-admin
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-admin:{{v_dfsp_admin}}
+        restart_policy: always
+        state: started
+        env:
+          SERVICE_30020_NAME: 'dfsp-admin'
+          SERVICE_80_NAME: 'dfsp-admin'
+          SERVICE_8020_NAME: 'dfsp-admin'
+          ut_dfsp_admin_uat_api__url: 'http://dfsp-api:8010'
+          ut_dfsp_admin_uat_identity__url: 'http://dfsp-identity:8012'
+          UT_ENV: 'uat'
+        networks:
+          - name: MOJALOOP_NET
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-admin
+        links: postgres:postgres
+        ports: 
+          - 30020:30020
+          - 8020:8020
+          - 80:80
+
+    - name: start dfsp-ledger
+      become: true
+      docker_container:
+        name: dfsp-ledger
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-ledger:{{v_dfsp_ledger}}
+        restart_policy: always
+        state: started
+        networks:
+          - name: MOJALOOP_NET
+        env:
+          SERVICE_30014_NAME: 'dfsp-ledger'
+          SERVICE_8014_NAME: 'dfsp-ledger'
+          ut_dfsp_ledger_dev_db__create__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_ledger_dev_db__create__user: "{{ dfsp_pg_user }}"
+          ut_dfsp_ledger_dev_db__db__database: '{{ inventory_hostname }}-ledger'
+          ut_dfsp_ledger_dev_db__db__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_ledger_dev_db__db__user: '{{ inventory_hostname }}.ledger'
+          ut_dfsp_ledger_dev_httpserver__baseUrl: 'http://{{ inventory_hostname }}:8014/ledger'
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-ledger
+        links: postgres:postgres
+        ports: 
+          - 30014:30014
+          - 8014:8014
+
+    - name: start dfsp-identity
+      become: true
+      docker_container:
+        name: dfsp-identity
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-identity:{{v_dfsp_identity}}
+        restart_policy: always
+        state: started
+        networks:
+          - name: MOJALOOP_NET
+        env:
+          SERVICE_30012_NAME: 'dfsp-identity'
+          SERVICE_8012_NAME: 'dfsp-identity'
+          ut_dfsp_identity_dev_api__url: 'http://dfsp-api:8010'
+          ut_dfsp_identity_dev_db__create__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_identity_dev_db__create__user: "{{ dfsp_pg_user }}"
+          ut_dfsp_identity_dev_db__db__database: '{{ inventory_hostname }}-identity'
+          ut_dfsp_identity_dev_db__db__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_identity_dev_db__db__user: '{{ inventory_hostname }}.identity'
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-identity
+        links: postgres:postgres
+        ports: 
+          - 30012:30012
+          - 8012:8012
+
+    - name: start dfsp-subscription
+      become: true
+      docker_container:
+        name: dfsp-subscription
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-subscription:{{v_dfsp_subscription}}
+        restart_policy: always
+        state: started
+        networks:
+          - name: MOJALOOP_NET
+        env:
+          SERVICE_30017_NAME: 'dfsp-subscription'
+          SERVICE_8017_NAME: 'dfsp-subscription'
+          ut_dfsp_subscription_dev_db__create__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_subscription_dev_db__create__user: "{{ dfsp_pg_user }}"
+          ut_dfsp_subscription_dev_db__db__database: '{{ inventory_hostname }}-subscription'
+          ut_dfsp_subscription_dev_db__db__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_subscription_dev_db__db__user: '{{ inventory_hostname }}.subscription'
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-subscription
+        links: postgres:postgres
+        ports: 
+          - 30017:30017
+          - 8017:8017
+
+    - name: start dfsp-account
+      become: true
+      docker_container:
+        name: dfsp-account
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/dfsp-account:{{v_dfsp_account}}
+        restart_policy: always
+        state: started
+        networks:
+          - name: MOJALOOP_NET
+        env:
+          SERVICE_30009_NAME: 'dfsp-account'
+          SERVICE_8009_NAME: 'dfsp-account'
+          ut_dfsp_account_dev_db__create__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_account_dev_db__create__user: "{{ dfsp_pg_user }}"
+          ut_dfsp_account_dev_db__db__database: '{{ inventory_hostname }}-account'
+          ut_dfsp_account_dev_db__db__password: "{{ dfsp_pg_pass }}"
+          ut_dfsp_account_dev_db__db__user: '{{ inventory_hostname }}.account'
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: dfsp-account
+        links: postgres:postgres
+        ports: 
+          - 30009:30009
+          - 8009:8009

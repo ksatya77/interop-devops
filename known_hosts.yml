@@ -1,0 +1,7 @@
+
+- name: Clean known hosts environment
+  hosts: localhost
+  connection: local
+  roles:
+    - role: build_inventory
+    - role: clean_known_hosts

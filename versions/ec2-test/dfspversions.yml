@@ -1,0 +1,11 @@
+v_dfsp_ussd: 1.0.0-quotes.42-major_quotes
+v_dfsp_rule: 0.5.24-master
+v_dfsp_directory: 0.7.26-master
+v_dfsp_api: 1.0.0-quotes.81-major_quotes
+v_dfsp_transfer: 0.20.23-master
+v_dfsp_admin: 0.17.42-master
+v_dfsp_ledger: 2.0.0-quotes.29-major_quotes
+v_dfsp_identity: 0.10.4-master
+v_dfsp_subscription: 0.5.8-master
+v_dfsp_account: 0.9.26-master
+v_postgres: 9.6.5

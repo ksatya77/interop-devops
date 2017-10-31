@@ -1,0 +1,26 @@
+- name: Remove public key
+  file:
+    path: /home/vagrant/.ssh/id_rsa
+    state: absent
+
+- name: Generate new key
+  shell: cat /dev/zero | ssh-keygen -t rsa -q -N "" -f /home/vagrant/.ssh/id_rsa
+
+- name: Setup known_hosts file
+  shell: ssh-keyscan mgmt dfsp1 dfsp2 cst >> /home/vagrant/.ssh/known_hosts
+
+- name: Force ssh initial passwd auth
+  shell: /usr/bin/sshpass -p vagrant ansible -i /vagrant/inventory-file all -m ping --ask-pass
+
+- name: Send keys to hosts
+  shell: /usr/bin/sshpass -p vagrant ansible-playbook -i /vagrant/inventory-file  /vagrant/ssh-addkey.yml --ask-pass
+
+- name: copy configs into /home/vagrant (from inside the mgmt node)
+  synchronize:
+    rsync_opts:
+      - "--chmod=D755"
+    src: /vagrant/
+    dest: /home/vagrant/
+
+- name:  Repair shell scripts in home
+  shell: find /home/vagrant/ -name '*.sh' -print0 | xargs -0 dos2unix

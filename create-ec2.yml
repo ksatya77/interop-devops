@@ -1,0 +1,172 @@
+#- include: plays/build_inventory.yml
+#  tags: always
+
+- name: Provision environment
+  hosts: localhost
+  connection: local
+  vars:
+    app_ingress_rules:
+      - proto: tcp
+        from_port: 8080
+        to_port: 8080
+        cidr_ip: 0.0.0.0/0
+    env_path_loc: env
+
+# Save for later when we can start using our own FQDN instead of EC2 ips/dns
+#  pre_tasks:
+#    - name: Add DNS zone
+#      route53_zone:
+#        zone: '{{ env_domain }}'
+#        state: present
+#      tags: dns
+  roles:
+
+    - role: provision_ec2
+      l1p_type: cst
+      inst_role: csts
+      provision_ec2_type: '{{ cst_ec2_type }}'
+      provision_ec2_count: '{{ cst_ec2_count }}'
+      tags: cst, provision
+
+    - role: provision_ec2
+      l1p_type: dfsp
+      inst_role: dfsps
+      provision_ec2_type: '{{ dfsp_ec2_type }}'
+      provision_ec2_count: '{{ dfsp_ec2_count }}'
+      tags: dfsp, provision
+
+    - role: provision_ec2
+      l1p_type: mgmt
+      inst_role: mgmt
+      provision_ec2_type: '{{ mgmt_ec2_type }}'
+      provision_ec2_count: '{{ mgmt_ec2_count }}'
+      tags: mgmt, provision
+
+    - role: build_inventory
+      tags: always
+
+    - role: clean_known_hosts
+      tags: always
+
+    - role: artifacts_ec2
+      tags: artifacts
+
+- name: Provision management node
+  hosts: mgmt
+  tags: provision2, mgmt
+  roles:
+    - { role: provision_ec2_mgmt, become: yes }
+    - { role: provision_ec2_mgmt_nr, become: no }
+
+- name: Provision worker node(s)
+  hosts: csts, dfsps
+  tags: provision2, workers
+  roles:
+    - { role: provision_ec2_workers, become: yes }
+
+- name: Login to docker
+  hosts: csts, dfsps
+  tags: auth
+  roles:
+    - role: login_docker
+
+- name: Install Central IST components
+  hosts: csts
+  tags: cst
+  roles:
+    - role: cst
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      postgres_ip: 172.17.0.1
+      worker_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+      mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
+      side_kms_url: 'ws://central-kms-test-825003705.us-west-2.elb.amazonaws.com/sidecar'
+
+- name: Pull IST ModusBox components
+  hosts: localhost
+  tags: mule_ist
+  become: yes
+  roles:
+    - role: mule_non_docker_pre_ist
+
+- name: Install IST ModusBox components
+  hosts: csts
+  tags: mule_ist
+  become: yes
+  roles:
+    - role: mule_non_docker_ist
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      worker_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+      mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
+
+- name:  Install DFSP components
+  hosts: dfsps
+  tags: dfsp
+  roles:
+    - role: dfsp
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      api_hostname: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+
+- name: Pull ModusBox components
+  hosts: localhost
+  tags: mule
+  become: yes
+  roles:
+    - role: mule_non_docker_pre
+
+- name: Install ModusBox components
+  hosts: dfsps
+  tags: mule
+  become: yes
+  roles:
+#    - role: mule
+    - role: mule_non_docker
+      env_path: env/{{ env }}
+      log_ip: localhost
+      sandbox_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+      mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
+
+- name:  Install Account and User Data
+  hosts: mgmt
+  tags: request
+  roles:
+    - role: request_data_ec2
+
+- name:  Install ILP components
+  hosts: dfsps
+  tags: ilp
+  roles:
+    - role: ilp
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      cst_host_name: '{{ hostvars.cst1.ec2_facts.public_dns_name }}'
+      ilp_host_name: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+      ilp_base_url: 'http://{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+      ilp_address_neighborhood: 'levelone'
+      ilp_central_ledger_prefix: "levelone.ist."
+
+- name:  Install ELK stack
+  hosts: mgmt
+  tags: elk
+  roles:
+    - { role: elk, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
+
+- name: Install Filebeat
+  hosts: dfsps, csts 
+  tags: filebeat
+  roles:
+    - { role: filebeat, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
+
+- name: Install Curator
+  hosts: mgmt
+  tags: curator
+  roles:
+    - { role: curator, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
+
+- name: Remove temporary artifact files
+  hosts: localhost
+  tags: cleanup
+  roles:
+    - role: clean_artifacts

@@ -1,0 +1,46 @@
+---
+#    - name: Add Filebeat gpg key
+#      shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+
+    - name: Add Filebeat gpg key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+#    - name: add filebeat repo
+#      shell: echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-5.x.list
+
+    - name: Add Filebeat repo
+      apt_repository:
+        repo: deb https://artifacts.elastic.co/packages/5.x/apt stable main
+        state: present
+        update_cache: yes
+
+    - name: Install Filebeat
+      apt:
+       name: filebeat
+       state: present
+
+    - name: Copy over the Filebeat config playbook
+      copy: 
+        src: artifacts/filebeat.yml.template
+        dest: /etc/filebeat/filebeat.yml
+
+    - name: Configure Filebeat host specific items
+      replace:
+        path: /etc/filebeat/filebeat.yml
+        regexp: '^  env: dfsp1-performance-test'
+        replace: '  env: {{ inventory_hostname }}-{{ name_tag }}'
+
+    - replace:
+        path: /etc/filebeat/filebeat.yml
+        regexp: '^  hosts: ["54.71.228.163:5043"]'
+        replace: '  hosts: ["{{ mgmt_host }}:5043"]'
+
+    - name: Restart Filebeat
+      service:
+        state: restarted
+        name: filebeat
+
+    - name: Set Filebeat to start automatically
+      shell: update-rc.d filebeat defaults 95 10

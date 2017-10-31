@@ -1,0 +1,66 @@
+# Ansible playbook for deploying the
+# ilp-connector, ilp-spsp-client-rest, and ilp-spsp-server
+# to the L1P test integration environment
+
+# Note this must be run with the CLI param --extra-vars="docker_username=... docker_password=... docker_email=..."
+---
+
+- include_vars:
+    file: versions/{{ env }}/modusboxversions.yml
+
+- name: Login to Docker repository
+  become: true
+  docker_login:
+    registry: "modusbox-level1-docker.jfrog.io"
+    username: "modusbox"
+    password: "AP8BzLe1XaJQDNaZ2qdwtLtj9gW"
+    reauthorize: yes
+
+- name: Start interop-docker
+  become: true
+  docker_container:
+    name: devMule
+    image: "modusbox-level1-docker.jfrog.io/interop-docker:{{ v_interop_docker }}"
+    restart_policy: always
+    state: started
+    networks:
+      - name: MOJALOOP_NET
+    restart: yes
+    volumes: 
+      - "/opt/mule/logs:/opt/mule/logs"
+      - "/opt/mule/apps:/opt/mule/apps"
+      - "/opt/mule/domains:/opt/mule/domains"
+      - "/opt/mule/conf:/opt/mule/conf"
+    log_driver: syslog
+    log_options: 
+      syslog-address: tcp://10.0.15.10:514
+      syslog-facility: daemon
+      tag: interop-docker
+    ports:
+      - "8081:8081"
+      - "8088:8088"
+      - "8089:8089"
+      - "9081:9081"
+      - "9088:9088"
+    env:
+      MULE_ENV={{inventory_hostname}}-vagrant
+      SERVICE_8081_NAME=interop-docker
+      SERVICE_8088_NAME=interop-docker
+      SERVICE_9081_NAME=interop-docker
+      SERVICE_9088_NAME=interop-docker
+      MAX_JVM_MEMORY=256
+
+- name: copy mule domain
+  synchronize:
+    src: /vagrant/artifacts/mule_artifacts/domains
+    dest: /opt/mule
+
+- name: copy mule apps
+  synchronize:
+    src: /vagrant/artifacts/mule_artifacts/apps
+    dest: /opt/mule
+
+- name: copy mule conf
+  synchronize:
+    src: /vagrant/artifacts/mule_artifacts/conf
+    dest: /opt/mule

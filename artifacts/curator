@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/local/bin/curator --config /tmp/curator-config.yml /tmp/curator-action.yml >> /tmp/curator.log 2>&1

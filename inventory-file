@@ -1,0 +1,14 @@
+[mgmts]
+mgmt ansible_connection=local
+
+[dfsps]
+dfsp1
+dfsp2
+
+[csts]
+cst
+
+[workers]
+dfsp1
+dfsp2
+cst
