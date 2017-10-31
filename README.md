@@ -38,8 +38,10 @@ Local L1P install (For the installation instructions to the Amazon EC2 environme
 4.  Configure the network parameters in the Vagrantfile:
     1.  Open <base_dir>/Vagrantfile in the editor of your choice.
     2.  Locate the four locations which require configuration, for example:
-        ```######### Update the line below to match your network settings ###########
-        dfsp1_config.vm.network "public_network", ip: "192.168.0.xxx", bridge: "en0: Wi-Fi (AirPort)"```
+        ```
+        ######### Update the line below to match your network settings ###########
+        dfsp1_config.vm.network "public_network", ip: "192.168.0.xxx", bridge: "en0: Wi-Fi (AirPort)"
+        ```
     3.  Update the ip: entry abd bridge: entry to match the settings for the host machine running this image.
         Note:  The command `/usr/local/bin/VBoxManage list bridgedifs` can be used to help find the name of the network and ip address this machine uses on that network.  Update the ip entries with four unused ip addresses on that network.
 5.  Run the command 'vagrant up' from the base directory
