@@ -1,0 +1,64 @@
+#! /bin/bash
+
+case $1 in
+init)
+  echo "Performing initial Mojaloop startup.  Provisioning will not be performed if the instances already exist!\n"
+  echo "Run \'$0 remove\' before this command if you intend to create a fresh install!\n"
+  vagrant up
+  ;;
+remove)
+  echo "Removing existing Mojaloop components...\n"
+  echo "You will prompted to remove each VM to avoid accidental execution of this action...\n"
+  vagrant destroy
+  ;;
+stop)
+  echo "Stopping Mojaloop...\n"
+  vagrant halt
+  ;;
+start)
+  echo "Starting Mojaloop...\n"
+  vagrant up
+  vagrant ssh dfsp1 -c "~/startup.sh"
+  vagrant ssh dfsp2 -c "~/startup.sh"
+  vagrant ssh cst -c "~/startup.sh"
+  ;;
+restart)
+  echo "Stopping Mojaloop...\n"
+  vagrant halt
+  vagrant up
+  case $2 in
+  cst)
+    echo "Restarting IST components only...\n"
+    vagrant ssh cst -c "~/startup.sh"
+    ;;
+  dfsps)
+    echo "Restarting all DFSP components...\n"
+    vagrant ssh dfsp1 -c "~/startup.sh"
+    vagrant ssh dfsp2 -c "~/startup.sh"
+    ;;
+  dfsp1)
+    echo "Restarting DFSP1 components only...\n"
+    vagrant ssh dfsp1 -c "~/startup.sh"
+    ;;
+  dfsp2)
+    echo "Restarting DFSP2 components only...\n"
+    vagrant ssh dfsp2 -c "~/startup.sh"
+    ;;
+  all)
+    echo "Restarting all Mojaloop components...\n"
+    vagrant ssh cst -c "~/startup.sh"
+    vagrant ssh dfsp1 -c "~/startup.sh"
+    vagrant ssh dfsp2 -c "~/startup.sh"
+    ;;
+  *)
+    echo "Restarting all Mojaloop components...\n"
+    vagrant ssh cst -c "~/startup.sh"
+    vagrant ssh dfsp1 -c "~/startup.sh"
+    vagrant ssh dfsp2 -c "~/startup.sh"
+    ;;
+  esac
+  ;;
+*)
+  Usage:  mojaloopctl init | start | restart [all|cst|dfsps|dfsp1|dfsp2] | stop | remove
+  ;;
+esac
