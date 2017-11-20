@@ -35,6 +35,37 @@
     seconds: 30
 
 # DFSP1 User Setup
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDEtdGVzdDpkZnNwMS10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"John\",\"lastName\": \"Smith\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"2065551212\",\"accountName\": \"Checking\",\"password\": \"1234\"}' http://{{ hostvars.dfsp1.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDEtdGVzdDpkZnNwMS10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"Maria\",\"lastName\": \"Sanchez\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"2065551222\",\"accountName\": \"Savings\",\"password\": \"1234\"}' http://{{ hostvars.dfsp1.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDEtdGVzdDpkZnNwMS10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"admin\",\"lastName\": \"admin\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"2065551232\",\"accountName\": \"admin\",\"password\": \"admin\"}' http://{{ hostvars.dfsp1.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDEtdGVzdDpkZnNwMS10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"dfsp1-testconnector\",\"lastName\": \"dfsp1-testconnector-last\",\"dob\": \"10/12/1999\",\"nationalId\": \"123456789\",\"phoneNumber\": \"2065551242\",\"accountName\": \"dfsp1-testconnector\",\"password\": \"1234\"}' http://{{ hostvars.dfsp1.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDEtdGVzdDpkZnNwMS10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"merchant\",\"lastName\": \"merchant\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"2065551252\",\"accountName\": \"merchant\",\"password\": \"1234\",\"roleName\": \"merchant\"}' http://{{ hostvars.dfsp1.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
+
 - shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDEtdGVzdDpkZnNwMS10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"Khomotso\",\"lastName\": \"Makgopa\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"1272545111\",\"accountName\": \"MakgopaPayment\",\"password\": \"1234\"}' http://{{ hostvars.dfsp1.ansible_host }}:8010/wallet"
   register: output
 
@@ -72,8 +103,37 @@
     var: output.stdout
 
 
-
 # DFSP2 User Setup
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDItdGVzdDpkZnNwMi10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"Jane\",\"lastName\": \"Doe\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"2065552212\",\"accountName\": \"bob\",\"password\": \"1234\"}' http://{{ hostvars.dfsp2.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDItdGVzdDpkZnNwMi10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"Steven\",\"lastName\": \"Chan\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"2065552222\",\"accountName\": \"alice\",\"password\": \"1234\"}' http://{{ hostvars.dfsp2.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDItdGVzdDpkZnNwMi10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"admin\",\"lastName\": \"admin\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"2065552232\",\"accountName\": \"admin\",\"password\": \"admin\"}' http://{{ hostvars.dfsp2.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDItdGVzdDpkZnNwMi10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"dfsp2-testconnector\",\"lastName\": \"dfsp2-testconnector-last\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"2065552242\",\"accountName\": \"dfsp2-testconnector\",\"password\": \"1234\"}' http://{{ hostvars.dfsp2.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDItdGVzdDpkZnNwMi10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"merchant\",\"lastName\": \"merchant\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"2065552252\",\"accountName\": \"merchant\",\"password\": \"1234\",\"roleName\": \"merchant\"}' http://{{ hostvars.dfsp2.ansible_host }}:8010/wallet"
+  register: output
+
+- debug:
+    var: output.stdout
+
 - shell: "curl -H \"Content-Type: application/json\" -H \"Authorization:Basic ZGZzcDItdGVzdDpkZnNwMi10ZXN0\" -X POST -d '{\"identifierTypeCode\": \"tel\",\"firstName\": \"Siabelo\",\"lastName\": \"Maroka\",\"dob\": \"10/12/1999\",\"nationalId\": \"123654789\",\"phoneNumber\": \"1272545117\",\"accountName\": \"MarokaPayment\",\"password\": \"1234\"}' http://{{ hostvars.dfsp2.ansible_host }}:8010/wallet"
   register: output
 

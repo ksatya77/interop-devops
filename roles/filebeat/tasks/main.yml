@@ -34,7 +34,7 @@
 
     - replace:
         path: /etc/filebeat/filebeat.yml
-        regexp: '^  hosts: ["54.71.228.163:5043"]'
+        regexp: '^  hosts: \["54.71.228.163:5043"\]'
         replace: '  hosts: ["{{ mgmt_host }}:5043"]'
 
     - name: Restart Filebeat
