@@ -35,7 +35,8 @@ Optional setup (Advanced):  The above command, without any modifiers, will insta
 You can modify this setup via the use of tags within the Vagrantfile by editing the ansible provisioning command near the end of the file.
 The following tags are currently available:
 eip - Used to control the binding of elastic ips at instance creation
-provision - Provisioning of worker nodes (DFSP and CST)
+provision - Creation of hoat machines nodes (MGMT, DFSP and CST)
+provision2 - Provisioning of the software requirements
 auth - Used to cache authorization credentials for docker login to AWS ECR and jfrog repositories
 mgmt - Pre-requsite software provisioning for the management node
 cst - Installation of the Central Services components supplied by Dwolla
@@ -50,7 +51,7 @@ filebeat - Installation of filebeat which is used to move data into the ELK stac
 curator - Installation of the curator package which is used to manage index data for the ELK stack
 cleanup - Used to control the cleanup of the locally created artifact files from the installation process
 
-Example: `ansible-playbook create-ec2.yml -e "ec2-test" --skip-tags="provision, mgmt, dfsp, cst_db, mule, mule_ist, request, ilp, elk, filebeat, curator"` This command will only reinstall the cst software components without trying to reinstall the db users/objects.  All other roles will be skipped.
+Example: `ansible-playbook create-ec2.yml -e "ec2-test" --skip-tags="provision, provision2, mgmt, dfsp, cst_db, mule, mule_ist, request, ilp, elk, filebeat, curator"` This command will only reinstall the cst software components without trying to reinstall the db users/objects.  All other roles will be skipped.
 
 Notes:  
 

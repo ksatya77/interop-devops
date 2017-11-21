@@ -63,10 +63,11 @@ Local L1P install (For the installation instructions to the Amazon EC2 environme
 
 Optional setup (Advanced):  The above command, without any modifiers, will install 1 Management node, 2 Financial Service Provider nodes, and 1 Central Services node with all components on each node.
 You can modify this setup via the use of tags within the Vagrantfile by editing the ansible provisioning command near the end of the file or by executing ansible-playbook on the command line.
-Example: `ansible-playbook create-local.yml -e "local" --skip-tags="provision, mgmt, cst, cst_db, mule_ist, request, elk, filebeat, curator"` This command will reinstall the dfsp, mule and ilp software components.  All other roles will be skipped.
+Example: `ansible-playbook create-local.yml -e "local" --skip-tags="provision, provision2, mgmt, cst, cst_db, mule_ist, request, elk, filebeat, curator"` This command will reinstall the dfsp, mule and ilp software components.  All other roles will be skipped.
 
 The following tags are currently available:
-provision - Provisioning of worker nodes (DFSP and CST)
+provision - Creation of hoat machines nodes (MGMT, DFSP and CST)
+provision2 - Provisioning of the software requirements
 auth - Used to cache authorization credentials for docker login to AWS ECR and jfrog repositories
 mgmt - Pre-requsite software provisioning for the management node
 cst - Installation of the Central Services components supplied by Dwolla
