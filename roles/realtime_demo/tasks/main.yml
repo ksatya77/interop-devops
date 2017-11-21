@@ -1,0 +1,22 @@
+---
+    - include_vars:
+        file: versions/{{ env }}/modusboxversions.yml
+
+    - name: start realtime-demo
+      become: true
+      docker_container:
+        name: realtime-demo
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/realtime-demo:{{v_realtime_demo}}
+        restart_policy: always
+        state: started
+        env:
+          IST_HOST: '{{ demo_ist_host }}'
+          IST_PORT: '{{ demo_ist_port }}'
+          IST_TOKEN: '{{ demo_token }}'
+        log_driver: syslog
+        log_options: 
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: realtime-demo
+        ports: 
+          - 5000:5000
