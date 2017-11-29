@@ -8,11 +8,11 @@
       ilp-host={{ hostvars.dfsp1.ansible_host }}
       proxy-host={{ hostvars.dfsp1.ansible_host }}
       central-dir-env=mock
-      central-dir-host={{ hostvars.cst.ansible_host }}
+      central-dir-host={{ hostvars.ist.ansible_host }}
       central-dir-api.port=3000
-      central-fraud-sharing-host={{ hostvars.cst.ansible_host }}
+      central-fraud-sharing-host={{ hostvars.ist.ansible_host }}
       central-fraud-sharing-api.port=3003
-      mock-central-dir.host={{ hostvars.cst.ansible_host }}
+      mock-central-dir.host={{ hostvars.ist.ansible_host }}
       mock-central-dir.port=8088
       metrics.reporter.kafka.broker={{ hostvars.mgmt.ansible_host }}:9092
       environment=dfsp1-test
@@ -29,11 +29,11 @@
       ilp-host={{ hostvars.dfsp2.ansible_host }}
       proxy-host={{ hostvars.dfsp2.ansible_host }}
       central-dir-env=mock
-      central-dir-host={{ hostvars.cst.ansible_host }}
+      central-dir-host={{ hostvars.ist.ansible_host }}
       central-dir-api.port=3000
-      central-fraud-sharing-host={{ hostvars.cst.ansible_host }}
+      central-fraud-sharing-host={{ hostvars.ist.ansible_host }}
       central-fraud-sharing-api.port=3003
-      mock-central-dir.host={{ hostvars.cst.ansible_host }}
+      mock-central-dir.host={{ hostvars.ist.ansible_host }}
       mock-central-dir.port=8088
       metrics.reporter.kafka.broker={{ hostvars.mgmt.ansible_host }}:9092
       environment=dfsp2-test
@@ -44,10 +44,10 @@
 - local_action:
     module: blockinfile
     create: yes
-    dest: "artifacts/mule_artifacts/conf_ist/mule-l1p.properties.cst"
+    dest: "artifacts/mule_artifacts/conf_ist/mule-l1p.properties.ist"
     block: |
       central-dir-env=mock
-      mock-central-dir.host={{ hostvars.cst.ansible_host }}
+      mock-central-dir.host={{ hostvars.ist.ansible_host }}
       mock-central-dir.port=8088
       metrics.reporter.kafka.broker={{ hostvars.mgmt.ansible_host }}:9092
       environment=ist1-test

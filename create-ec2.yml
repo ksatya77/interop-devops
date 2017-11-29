@@ -22,11 +22,11 @@
   roles:
 
     - role: provision_ec2
-      l1p_type: cst
-      inst_role: csts
-      provision_ec2_type: '{{ cst_ec2_type }}'
-      provision_ec2_count: '{{ cst_ec2_count }}'
-      tags: cst, provision
+      l1p_type: ist
+      inst_role: ists
+      provision_ec2_type: '{{ ist_ec2_type }}'
+      provision_ec2_count: '{{ ist_ec2_count }}'
+      tags: ist, provision
 
     - role: provision_ec2
       l1p_type: dfsp
@@ -59,22 +59,22 @@
     - { role: provision_ec2_mgmt_nr, become: no }
 
 - name: Provision worker node(s)
-  hosts: csts, dfsps
+  hosts: ists, dfsps
   tags: provision2, workers
   roles:
     - { role: provision_ec2_workers, become: yes }
 
 - name: Login to docker
-  hosts: csts, dfsps
+  hosts: ists, dfsps
   tags: auth
   roles:
     - role: login_docker
 
 - name: Install Central IST components
-  hosts: csts
-  tags: cst
+  hosts: ists
+  tags: ist
   roles:
-    - role: cst
+    - role: ist
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
       postgres_ip: 172.17.0.1
@@ -90,7 +90,7 @@
     - role: mule_non_docker_pre_ist
 
 - name: Install IST ModusBox components
-  hosts: csts
+  hosts: ists
   tags: mule_ist
   become: yes
   roles:
@@ -141,7 +141,7 @@
     - role: ilp
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
-      cst_host_name: '{{ hostvars.cst1.ec2_facts.public_dns_name }}'
+      ist_host_name: '{{ hostvars.ist1.ec2_facts.public_dns_name }}'
       ilp_host_name: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
       ilp_base_url: 'http://{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
       ilp_address_neighborhood: 'levelone'
@@ -154,7 +154,7 @@
     - { role: elk, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
 
 - name: Install Filebeat
-  hosts: dfsps, csts 
+  hosts: dfsps, ists
   tags: filebeat
   roles:
     - { role: filebeat, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }

@@ -12,7 +12,7 @@
   - name: copy Mule properties file to appropriate server
     become: yes
     copy:
-      src: artifacts/mule_artifacts/conf_ist/mule-l1p.properties.cst
+      src: artifacts/mule_artifacts/conf_ist/mule-l1p.properties.ist
       dest: ~/mule-l1p.properties
 
 #  - name: copy Mule adapter-mapping file to appropriate server

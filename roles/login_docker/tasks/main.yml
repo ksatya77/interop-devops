@@ -14,7 +14,7 @@
     reauthorize: yes
   become: true
 
-- name: Create a docker network
+- name: Create the primary docker network
   become: true
   docker_network:
     name: MOJALOOP_NET

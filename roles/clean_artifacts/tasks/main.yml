@@ -16,7 +16,7 @@
     - 2
 
 - file:
-    path: artifacts/mule_artifacts/conf_ist/mule-l1p.properties.cst
+    path: artifacts/mule_artifacts/conf_ist/mule-l1p.properties.ist
     state: absent
   delegate_to: localhost
 

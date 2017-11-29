@@ -29,13 +29,13 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define :cst do |cst_config|
-    cst_config.vm.box = "ubuntu/trusty64"
-    cst_config.vm.hostname = "cst"
+  config.vm.define :ist do |ist_config|
+    ist_config.vm.box = "ubuntu/trusty64"
+    ist_config.vm.hostname = "ist"
     ######### Update the line below to match your network settings ###########
-    cst_config.vm.network "public_network", ip: "192.168.0.xxx", bridge: "en0: Wi-Fi (AirPort)"
-    #cst_config.vm.network "private_network", ip: "10.0.15.13"
-    cst_config.vm.provider "virtualbox" do |v|
+    ist_config.vm.network "public_network", ip: "192.168.0.xxx", bridge: "en0: Wi-Fi (AirPort)"
+    #ist_config.vm.network "private_network", ip: "10.0.15.13"
+    ist_config.vm.provider "virtualbox" do |v|
       v.memory = 1536
       v.cpus = 1
     end

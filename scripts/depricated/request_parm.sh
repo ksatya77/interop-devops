@@ -1,4 +1,4 @@
-# CST User Setup
+# IST User Setup
 #curl -X POST -H “Authorization:Basic YWRtaW46YWRtaW4=” --header ‘Content-Type: application/json’ --header ‘Accept: application/json’ -d ‘{“name”: “dfsp1”,“shortName”: “dfsp1”,“providerUrl”: “10.0.15.11:8088/scheme/adapter/v1”}’ ‘http://10.0.15.13:3000/commands/register’
 #curl -X POST http://52.90.147.216:3000/commands/register -H ‘authorization: Basic YWRtaW46YWRtaW4=’ -d ‘{“name”: “test”, “shortName”: “test”, “providerUrl”: “ec2-35-166-236-69.us-west-2.compute.amazonaws.com:8088/scheme/adapter/v1"}’
 

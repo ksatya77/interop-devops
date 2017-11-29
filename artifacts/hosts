@@ -2,5 +2,5 @@
 10.0.15.10  mgmt
 10.0.15.11  dfsp1
 10.0.15.12  dfsp2
-10.0.15.13  cst
+10.0.15.13  ist
 # END ANSIBLE MANAGED BLOCK

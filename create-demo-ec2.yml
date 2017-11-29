@@ -33,6 +33,6 @@
     - role: realtime_demo
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
-      demo_ist_host: '{{ demo_ist | default(hostvars.cst1.ec2_facts.public_dns_name) }}'
+      demo_ist_host: '{{ demo_ist | default(hostvars.ist1.ec2_facts.public_dns_name) }}'
       demo_ist_port: '{{ demo_port | default("3002") }}'
 

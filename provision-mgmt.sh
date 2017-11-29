@@ -13,7 +13,7 @@ sudo apt-get -y upgrade ansible
 #cat /dev/zero | ssh-keygen -t rsa -q -N "" -f /home/vagrant/.ssh/id_rsa
 
 # setup known hosts file
-#ssh-keyscan mgmt dfsp1 dfsp2 cst >> /home/vagrant/.ssh/known_hosts
+#ssh-keyscan mgmt dfsp1 dfsp2 ist >> /home/vagrant/.ssh/known_hosts
 
 #force ssh initial passwd auth
 #/usr/bin/sshpass -p vagrant ansible -i /vagrant/inventory-file all -m ping --ask-pass

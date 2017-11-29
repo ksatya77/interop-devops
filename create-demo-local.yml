@@ -21,7 +21,7 @@
 
 
 - name: Login to docker
-  hosts: csts, dfsps
+  hosts: ists, dfsps
   tags: auth
   roles:
     - role: login_docker
@@ -33,6 +33,6 @@
     - role: realtime_demo
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
-      demo_ist_host: '{{ demo_ist | default(hostvars.cst.ansible_host) }}'
+      demo_ist_host: '{{ demo_ist | default(hostvars.ist.ansible_host) }}'
       demo_ist_port: '{{ demo_port | default("3002") }}'
 

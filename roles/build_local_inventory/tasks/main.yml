@@ -10,7 +10,7 @@
 - shell: "grep -i {{ vagrant_net_type }}  Vagrantfile | grep -i dfsp2 | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
   register: local_dfsp2
 
-- shell: "grep -i {{ vagrant_net_type }}  Vagrantfile | grep -i cst | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
+- shell: "grep -i {{ vagrant_net_type }}  Vagrantfile | grep -i ist | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
   register: local_ist
 
 - name: Configure local inventory file
@@ -22,7 +22,7 @@
       {{ local_mgmt.stdout }}  mgmt
       {{ local_dfsp1.stdout }}  dfsp1
       {{ local_dfsp2.stdout }}  dfsp2
-      {{ local_ist.stdout }}  cst
+      {{ local_ist.stdout }}  ist
 
 - name: Build host groups
   add_host:
@@ -35,5 +35,5 @@
     - {host: 'mgmt', ip: '{{ local_mgmt.stdout }}', group: 'mgmts', ansible_user: 'vagrant', peer_name: 'mgmt'}
     - {host: 'dfsp1', ip: '{{ local_dfsp1.stdout }}', group: 'dfsps', ansible_user: 'vagrant', peer_name: 'dfsp2'}
     - {host: 'dfsp2', ip: '{{ local_dfsp2.stdout }}', group: 'dfsps', ansible_user: 'vagrant', peer_name: 'dfsp1'}
-    - {host: 'cst', ip: '{{ local_ist.stdout }}', group: 'csts', ansible_user: 'vagrant', peer_name: 'cst'}
+    - {host: 'ist', ip: '{{ local_ist.stdout }}', group: 'ists', ansible_user: 'vagrant', peer_name: 'ist'}
   delegate_to: localhost

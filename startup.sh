@@ -3,7 +3,7 @@
 box=`hostname`
 
 case $box in
-cst)
+ist)
   sudo /opt/mule/bin/mule stop
   echo "Starting Database...\n"
   for k in `sudo docker ps -a --format {{.ID}}:{{.Image}} | grep postgres | cut -d: -f1`; do sudo docker restart $k; done

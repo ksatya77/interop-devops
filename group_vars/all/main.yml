@@ -32,13 +32,13 @@ name_tag: demo
 
 # Instance types:
 instance_type: m4.xlarge
-cst_ec2_type: '{{ instance_type }}'
+ist_ec2_type: '{{ instance_type }}'
 dfsp_ec2_type: '{{ instance_type }}'
 mgmt_ec2_type: '{{ instance_type }}'
 
 # Instance counts
 dfsp_ec2_count: 2
-cst_ec2_count: 1
+ist_ec2_count: 1
 mgmt_ec2_count: 1
 
 #Postgres Admin Accounts
@@ -62,3 +62,6 @@ dfsp2_peer: dfsp1
 
 # Vagrantfile network setup (for local install only)
 vagrant_net_type: public_network #public_network or private_network
+
+#Kafka Metrics Reprting
+metrics_host_port: ec2-35-164-199-6.us-west-2.compute.amazonaws.com:9092

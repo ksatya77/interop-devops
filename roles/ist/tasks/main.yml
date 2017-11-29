@@ -1,6 +1,12 @@
 ---
     - include_vars:
-        file: versions/{{env}}/cstversions.yml
+        file: versions/{{env}}/istversions.yml
+
+    - name: Create the MOJALOOP IST docker network
+      become: true
+      docker_network:
+        name: ML_IST_NET
+        state: present
 
     - name: start postgres
       docker_container:
@@ -10,6 +16,8 @@
           POSTGRES_PASSWORD: "{{ ist_pg_pass }}"
           POSTGRES_USER: "{{ ist_pg_user }}"
           SERVICE_5432_NAME: 'postgres'
+        networks:
+          - name: ML_IST_NET
         ports: 5432:5432
         restart_policy: always
         log_driver: syslog
@@ -34,9 +42,8 @@
         name: "{{ item.name }}"
         password: "{{ item.passwd }}"
         role_attr_flags: SUPERUSER,CREATEROLE,CREATEDB,LOGIN
-        #role_attr_flags: SUPERUSER,CREATEROLE,CREATEUSER,CREATEDB,INHERIT,LOGIN,REPLICATION
         state: present
-      tags: cst_db
+      tags: ist_db
       with_items:
         - { name: central_directory, passwd: "{{ cdir_pass }}" }
         - { name: central_ledger, passwd: "{{ cleg_pass }}" }
@@ -52,7 +59,7 @@
         login_user: "{{ item.name }}"
         owner: "{{ item.name }}"
         login_password: "{{ item.passwd }}"
-      tags: cst_db
+      tags: ist_db
       with_items:
         - { name: central_directory, passwd: "{{ cdir_pass }}" }
         - { name: central_ledger, passwd: "{{ cleg_pass }}" }
@@ -67,8 +74,8 @@
         image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-directory:{{v_central_directory}}
         state: started
         restart_policy: always
-        links: postgres:postgres
-        #env_file: '{{ env_path }}/central-directory-env.list'
+        networks:
+          - name: ML_IST_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -109,10 +116,8 @@
         image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-ledger:{{v_central_ledger}}
         state: started
         restart_policy: always
-        #env_file: '{{ env_path }}/central-ledger-env.list'
-        links:
-          - postgres:postgres
-          #- forensic-logging-sidecar1:forensic-logging-sidecar1
+        networks:
+          - name: ML_IST_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -133,8 +138,9 @@
 #        name: forensic-logging-sidecar2
 #        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/forensic-logging-sidecar:{{v_forensic_logging_sidecar}}
 #        state: started
-#        #env_file: '{{ env_path }}/forensic-logging-sidecar-env2.list'
 #        restart_policy: always
+#        networks:
+#          - name: ML_IST_NET
 #        log_driver: syslog
 #        log_options:
 #          syslog-address: 'tcp://{{ log_ip }}:514'
@@ -152,11 +158,9 @@
         name: central-ledger-admin
         image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-ledger-admin:{{v_central_ledger_admin}}
         state: started
-        #env_file: '{{ env_path }}/central-ledger-admin-env.list'
         restart_policy: always
-        links:
-          - postgres:postgres
-          #- forensic-logging-sidecar2:forensic-logging-sidecar2
+        networks:
+          - name: ML_IST_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -178,9 +182,8 @@
         image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-end-user-registry:{{v_central_end_user_registry}}
         state: started
         restart_policy: always
-        links:
-          - postgres:postgres
-        #env_file: '{{ env_path }}/central-end-user-registry-env.list'
+        networks:
+          - name: ML_IST_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -197,10 +200,9 @@
         name: central-fraud-sharing
         image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-fraud-sharing:{{v_central_fraud_sharing}}
         state: started
-        #env_file: '{{ env_path }}/central-fraud-sharing-env.list'
         restart_policy: always
-        links:
-          - postgres:postgres
+        networks:
+          - name: ML_IST_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -217,8 +219,8 @@
         image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-hub:{{v_central_hub}}
         state: started
         restart_policy: always
-        links:
-          - postgres:postgres
+        networks:
+          - name: ML_IST_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'

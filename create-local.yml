@@ -16,7 +16,7 @@
     - { role: provision_mgmt_nr, become: no }
 
 - name: Provision worker node(s)
-  hosts: csts, dfsps
+  hosts: ists, dfsps
   tags: provision
   roles:
     - role: provision_workers
@@ -28,19 +28,19 @@
     - role: artifacts_local
 
 - name: Login to docker
-  hosts: csts, dfsps
+  hosts: ists, dfsps
   tags: auth
   roles:
     - role: login_docker
 
 - name: Install Central IST components
-  hosts: csts
-  tags: cst
+  hosts: ists
+  tags: ist
   roles:
-    - role: cst
+    - role: ist
       env_path: /vagrant/env/local
       log_ip: '{{ hostvars.mgmt.ansible_host }}'
-      worker_host: '{{ hostvars.cst.ansible_host }}'
+      worker_host: '{{ hostvars.ist.ansible_host }}'
       mgmt_host: '{{ hostvars.mgmt.ansible_host }}'
       side_kms_url: ws://central-kms-test-825003705.us-west-2.elb.amazonaws.com/sidecar
 
@@ -52,14 +52,14 @@
     - role: mule_non_docker_pre_ist
 
 - name: Install IST ModusBox components
-  hosts: csts
+  hosts: ists
   tags: mule_ist
   become: yes
   roles:
     - role: mule_non_docker_ist
       env_path: /vagrant/env/local
       log_ip: '{{ hostvars.mgmt.ansible_host }}'
-      worker_host: '{{ hostvars.cst.ansible_host }}'
+      worker_host: '{{ hostvars.ist.ansible_host }}'
       mgmt_host: '{{ hostvars.mgmt.ansible_host }}'
 
 - name: Install DFSP components
@@ -86,7 +86,7 @@
     - role: mule_non_docker
       env_path: /vagrant/env/local
       log_ip: '{{ hostvars.mgmt.ansible_host }}'
-      worker_host: '{{ hostvars.cst.ansible_host }}'
+      worker_host: '{{ hostvars.ist.ansible_host }}'
       mgmt_host: '{{ hostvars.mgmt.ansible_host }}'
 
 - name:  Install Account and User Data
@@ -102,7 +102,7 @@
     - role: ilp
       env_path: /vagrant/env/local
       log_ip: '{{ hostvars.mgmt.ansible_host }}'
-      cst_host_name: '{{ hostvars.cst.ansible_host }}'
+      ist_host_name: '{{ hostvars.ist.ansible_host }}'
       ilp_host_name: '{{ ansible_hostname }}'
       ilp_base_url: 'http://{{ ansible_host }}'
       ilp_address_neighborhood: 'levelone'

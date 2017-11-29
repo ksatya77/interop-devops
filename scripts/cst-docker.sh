@@ -5,7 +5,7 @@
 cat /dev/zero | ssh-keygen -t rsa -q -N "" -f /home/vagrant/.ssh/id_rsa
 
 # setup known hosts file
-ssh-keyscan dfsp1 dfsp2 cst >> /home/vagrant/.ssh/known_hosts
+ssh-keyscan dfsp1 dfsp2 ist >> /home/vagrant/.ssh/known_hosts
 
 # copy configs into /home/vagrant (from inside the mgmt node)
 cp -a /vagrant/* /home/vagrant
