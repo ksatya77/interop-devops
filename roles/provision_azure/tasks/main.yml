@@ -18,8 +18,9 @@
       shell: add-apt-repository "deb http://cz.archive.ubuntu.com/ubuntu trusty main"
 
     - name: Install base dependencies for Docker
-      action: apt name={{item}}
-      update_cache: yes
+      apt:
+        name: '{{ item }}'
+        update_cache: yes
       with_items:
         - aufs-tools
         - cgroupfs-mount
@@ -31,7 +32,8 @@
         - libsystemd-journal0
 
     - name: ensure all software and dependencies are installed
-      action: apt name={{item}}
+      apt:
+        name: '{{ item }}'
       with_items:
         # - tmux
         # - docker

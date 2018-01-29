@@ -21,84 +21,27 @@
 #      tags: dns
   roles:
 
-    - role: provision_ec2
-      l1p_type: ist
-      inst_role: ists
-      provision_ec2_type: '{{ ist_ec2_type }}'
-      provision_ec2_count: '{{ ist_ec2_count }}'
-      tags: ist, provision
-
-    - role: provision_ec2
-      l1p_type: dfsp
-      inst_role: dfsps
-      provision_ec2_type: '{{ dfsp_ec2_type }}'
-      provision_ec2_count: '{{ dfsp_ec2_count }}'
-      tags: dfsp, provision
-
-    - role: provision_ec2
-      l1p_type: mgmt
-      inst_role: mgmt
-      provision_ec2_type: '{{ mgmt_ec2_type }}'
-      provision_ec2_count: '{{ mgmt_ec2_count }}'
-      tags: mgmt, provision
-
-    - role: build_inventory
-      tags: always
-
-    - role: clean_known_hosts
-      tags: always
-
     - role: artifacts_ec2
-      tags: artifacts
+      tags: always
 
-- name: Provision management node
-  hosts: mgmt
-  tags: provision2, mgmt
-  roles:
-    - { role: provision_ec2_mgmt, become: yes }
-    - { role: provision_ec2_mgmt_nr, become: no }
+#- name: Provision management node
+#  hosts: mgmt
+#  tags: provision2, mgmt
+#  roles:
+#    - { role: provision_ec2_mgmt, become: yes }
+#    - { role: provision_ec2_mgmt_nr, become: no }
 
 - name: Provision worker node(s)
-  hosts: ists, dfsps
+  hosts: localhost
   tags: provision2, workers
   roles:
-    - { role: provision_ec2_workers, become: yes }
+    - { role: provision_azure, become: yes }
 
 - name: Login to docker
   hosts: ists, dfsps
-  tags: auth
+  tags: always
   roles:
     - role: login_docker
-
-- name: Install Central IST components
-  hosts: ists
-  tags: ist
-  roles:
-    - role: ist
-      env_path: env/{{ env }}
-      log_ip: 172.17.0.1
-      postgres_ip: 172.17.0.1
-      worker_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
-      mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
-      side_kms_url: 'ws://central-kms-test-825003705.us-west-2.elb.amazonaws.com/sidecar'
-
-- name: Pull IST ModusBox components
-  hosts: localhost
-  tags: mule_ist
-  become: yes
-  roles:
-    - role: mule_non_docker_pre_ist
-
-- name: Install IST ModusBox components
-  hosts: ists
-  tags: mule_ist
-  become: yes
-  roles:
-    - role: mule_non_docker_ist
-      env_path: env/{{ env }}
-      log_ip: 172.17.0.1
-      worker_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
-      mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
 
 - name:  Install DFSP components
   hosts: dfsps
@@ -107,7 +50,7 @@
     - role: dfsp
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
-      api_hostname: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+      api_hostname: '{{ ansible_host }}'
 
 - name: Pull ModusBox components
   hosts: localhost
@@ -125,14 +68,14 @@
     - role: mule_non_docker
       env_path: env/{{ env }}
       log_ip: localhost
-      sandbox_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
-      mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
+      sandbox_host: '{{ ansible_host }}'
+      mgmt_host: '{{ mgmt_host }}'
 
 - name:  Install Account and User Data
   hosts: mgmt
   tags: request
   roles:
-    - role: request_data_ec2
+    - role: request_data_azure
 
 - name:  Install ILP components
   hosts: dfsps
@@ -141,29 +84,29 @@
     - role: ilp
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
-      ist_host_name: '{{ hostvars.ist1.ec2_facts.public_dns_name }}'
-      ilp_host_name: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
-      ilp_base_url: 'http://{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+      ist_host_name: '{{ ist_host }}'
+      ilp_host_name: '{{ ansible_host }}'
+      ilp_base_url: 'http://{{ ansible_host }}'
       ilp_address_neighborhood: 'levelone'
       ilp_central_ledger_prefix: "levelone.ist."
 
-- name:  Install ELK stack
-  hosts: mgmt
-  tags: elk
-  roles:
-    - { role: elk, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
-
-- name: Install Filebeat
-  hosts: dfsps, ists
-  tags: filebeat
-  roles:
-    - { role: filebeat, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
-
-- name: Install Curator
-  hosts: mgmt
-  tags: curator
-  roles:
-    - { role: curator, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
+#- name:  Install ELK stack
+#  hosts: mgmt
+#  tags: elk
+#  roles:
+#    - { role: elk, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
+#
+#- name: Install Filebeat
+#  hosts: dfsps, ists
+#  tags: filebeat
+#  roles:
+#    - { role: filebeat, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
+#
+#- name: Install Curator
+#  hosts: mgmt
+#  tags: curator
+#  roles:
+#    - { role: curator, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
 
 - name: Remove temporary artifact files
   hosts: localhost
