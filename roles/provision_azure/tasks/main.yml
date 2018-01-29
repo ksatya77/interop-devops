@@ -14,11 +14,12 @@
     - name: add docker repo
       shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-    - name: ensure apt cache is updated
-      action: apt update_cache=yes
+    - name: add docker repo
+      shell: add-apt-repository "deb http://cz.archive.ubuntu.com/ubuntu trusty main"
 
     - name: Install base dependencies for Docker
       action: apt name={{item}}
+      update_cache: yes
       with_items:
         - aufs-tools
         - cgroupfs-mount
@@ -27,6 +28,7 @@
         - ca-certificates
         - curl
         - software-properties-common
+        - libsystemd-journal0
 
     - name: ensure all software and dependencies are installed
       action: apt name={{item}}
