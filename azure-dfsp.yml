@@ -38,13 +38,13 @@
     - { role: provision_azure, become: yes }
 
 - name: Login to docker
-  hosts: ists, dfsps
+  hosts: localhost
   tags: always
   roles:
     - role: login_docker
 
 - name:  Install DFSP components
-  hosts: dfsps
+  hosts: localhost
   tags: dfsp
   roles:
     - role: dfsp
@@ -60,7 +60,7 @@
     - role: mule_non_docker_pre
 
 - name: Install ModusBox components
-  hosts: dfsps
+  hosts: localhost
   tags: mule
   become: yes
   roles:
@@ -83,7 +83,7 @@
 #    - role: request_data_azure
 
 - name:  Install ILP components
-  hosts: dfsps
+  hosts: localhost
   tags: ilp
   roles:
     - role: ilp
