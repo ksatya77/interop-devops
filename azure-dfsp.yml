@@ -21,7 +21,7 @@
 #      tags: dns
   roles:
 
-    - role: artifacts_ec2
+    - role: artifacts_azure
       tags: always
 
 #- name: Provision management node
