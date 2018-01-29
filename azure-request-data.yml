@@ -1,0 +1,9 @@
+#- include: plays/build_inventory.yml
+#  tags: always
+
+- name:  Install Account and User Data
+  hosts: mgmt
+  tags: request
+  roles:
+    - role: request_data_azure
+

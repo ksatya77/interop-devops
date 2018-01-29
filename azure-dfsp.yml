@@ -71,11 +71,16 @@
       sandbox_host: '{{ ansible_host }}'
       mgmt_host: '{{ mgmt_host }}'
 
-- name:  Install Account and User Data
-  hosts: mgmt
-  tags: request
+- name:  Pause for other DFSP to be installed before running user data
+  hosts: localhost
   roles:
-    - role: request_data_azure
+    - role: pause
+
+#- name:  Install Account and User Data
+#  hosts: mgmt
+#  tags: request
+#  roles:
+#    - role: request_data_azure
 
 - name:  Install ILP components
   hosts: dfsps
