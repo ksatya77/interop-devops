@@ -89,13 +89,13 @@
         dest: /etc/cron.daily
         force: yes
     
-    - name: Setup /etc/hosts
-      become: false
-      copy:
-        src: artifacts/etchosts
-        dest: ~/etchosts
-   
-    - shell: cat /home/ubuntu/etchosts >> /etc/hosts
-
-    - name: Sync ntp
-      command: ntpdate -s ntp.ubuntu.com
+#    - name: Setup /etc/hosts
+#      become: false
+#      copy:
+#        src: artifacts/etchosts
+#        dest: ~/etchosts
+#
+#    - shell: cat /home/ubuntu/etchosts >> /etc/hosts
+#
+#    - name: Sync ntp
+#      command: ntpdate -s ntp.ubuntu.com
