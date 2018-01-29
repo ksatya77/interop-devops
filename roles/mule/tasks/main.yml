@@ -8,19 +8,11 @@
 - include_vars:
     file: versions/{{ env }}/modusboxversions.yml
 
-- name: Login to Docker repository
-  become: true
-  docker_login:
-    registry: "modusbox-level1-docker.jfrog.io"
-    username: "modusbox"
-    password: "AP8BzLe1XaJQDNaZ2qdwtLtj9gW"
-    reauthorize: yes
-
-- name: Start interop-docker
+- name: Start interop-dfsp-directory
   become: true
   docker_container:
-    name: devMule
-    image: "modusbox-level1-docker.jfrog.io/interop-docker:{{ v_interop_docker }}"
+    name: interop-dfsp-directory
+    image: "modusbox-level1-docker-release.jfrog.io/leveloneproject/interop-dfsp-directory:{{ v_interop_dfsp_directory }}"
     restart_policy: always
     state: started
     networks:
@@ -33,34 +25,132 @@
       - "/opt/mule/conf:/opt/mule/conf"
     log_driver: syslog
     log_options: 
-      syslog-address: tcp://10.0.15.10:514
+      syslog-address: 'tcp://{{ log_ip }}:514'
       syslog-facility: daemon
       tag: interop-docker
     ports:
-      - "8081:8081"
-      - "8088:8088"
-      - "8089:8089"
-      - "9081:9081"
-      - "9088:9088"
+      - "8081:8181"
+      - "8088:8188"
+      - "8089:8189"
+      - "9081:9181"
+      - "9088:9188"
     env:
-      MULE_ENV={{inventory_hostname}}-vagrant
-      SERVICE_8081_NAME=interop-docker
-      SERVICE_8088_NAME=interop-docker
-      SERVICE_9081_NAME=interop-docker
-      SERVICE_9088_NAME=interop-docker
-      MAX_JVM_MEMORY=256
+      MULE_ENV: '{{inventory_hostname}}-interop-dfsp-directory'
+      SERVICE_8181_NAME: 'interop-dfsp-directory'
+      SERVICE_8188_NAME: 'interop-dfsp-directory'
+      SERVICE_9181_NAME: 'interop-dfsp-directory'
+      SERVICE_9188_NAME: 'interop-dfsp-directory'
+      MAX_JVM_MEMORY: '256'
+      dfsp-host: '{{ worker_host }}'
+      ilp-host: '{{ worker_host }}'
+      central-dir-env: 'mock'
+      proxy-host: '{{ worker_host }}'
+      central-dir-host: '{{ ist_host }}'
+      central-dir-api.port: '3000'
+      central-fraud-sharing-host: '{{ ist_host }}'
+      central-fraud-sharing-api.port: '3003'
+      mock-central-dir.host: '{{ ist_host }}'
+      mock-central-dir.port: '8088'
+      metrics.reporter.kafka.broker: '{{ metrics_host_port }}'
+      environment: '{{ inventory_hostname }}-{{ name_tag }}'
+      metrics.reporter.environment: '{{ inventory_hostname }}-{{ name_tag }}'
+      maxHttpThreadsActive: '16'
+      maxHttpThreadsIdle: '4'
 
-- name: copy mule domain
-  synchronize:
-    src: /vagrant/artifacts/mule_artifacts/domains
-    dest: /opt/mule
+- name: Start interop-ilp-ledger
+  become: true
+  docker_container:
+    name: interop-ilp-ledger
+    image: "modusbox-level1-docker-release.jfrog.io/leveloneproject/interop-ilp-ledger:{{ v_interop_ilp_ledger }}"
+    restart_policy: always
+    state: started
+    networks:
+      - name: MOJALOOP_NET
+    restart: yes
+    volumes:
+      - "/opt/mule/logs:/opt/mule/logs"
+      - "/opt/mule/apps:/opt/mule/apps"
+      - "/opt/mule/domains:/opt/mule/domains"
+      - "/opt/mule/conf:/opt/mule/conf"
+    log_driver: syslog
+    log_options:
+      syslog-address: 'tcp://{{ log_ip }}:514'
+      syslog-facility: daemon
+      tag: interop-docker
+    ports:
+      - "8081:8281"
+      - "8088:8288"
+      - "8089:8289"
+      - "9081:9281"
+      - "9088:9288"
+    env:
+      MULE_ENV: '{{inventory_hostname}}-interop-ilp-ledger'
+      SERVICE_8181_NAME: 'interop-ilp-ledger'
+      SERVICE_8188_NAME: 'interop-ilp-ledger'
+      SERVICE_9181_NAME: 'interop-ilp-ledger'
+      SERVICE_9188_NAME: 'interop-ilp-ledger'
+      MAX_JVM_MEMORY: '256'
+      dfsp-host: '{{ worker_host }}'
+      ilp-host: '{{ worker_host }}'
+      central-dir-env: 'mock'
+      proxy-host: '{{ worker_host }}'
+      central-dir-host: '{{ ist_host }}'
+      central-dir-api.port: '3000'
+      central-fraud-sharing-host: '{{ ist_host }}'
+      central-fraud-sharing-api.port: '3003'
+      mock-central-dir.host: '{{ ist_host }}'
+      mock-central-dir.port: '8088'
+      metrics.reporter.kafka.broker: '{{ metrics_host_port }}'
+      environment: '{{ inventory_hostname }}-{{ name_tag }}'
+      metrics.reporter.environment: '{{ inventory_hostname }}-{{ name_tag }}'
+      maxHttpThreadsActive: '16'
+      maxHttpThreadsIdle: '4'
 
-- name: copy mule apps
-  synchronize:
-    src: /vagrant/artifacts/mule_artifacts/apps
-    dest: /opt/mule
-
-- name: copy mule conf
-  synchronize:
-    src: /vagrant/artifacts/mule_artifacts/conf
-    dest: /opt/mule
+- name: Start interop-scheme-adapter
+  become: true
+  docker_container:
+    name: interop-scheme-adapter
+    image: "modusbox-level1-docker-release.jfrog.io/leveloneproject/interop-scheme-adapter:{{ v_interop_scheme_adapter }}"
+    restart_policy: always
+    state: started
+    networks:
+      - name: MOJALOOP_NET
+    restart: yes
+    volumes:
+      - "/opt/mule/logs:/opt/mule/logs"
+      - "/opt/mule/apps:/opt/mule/apps"
+      - "/opt/mule/domains:/opt/mule/domains"
+      - "/opt/mule/conf:/opt/mule/conf"
+    log_driver: syslog
+    log_options:
+      syslog-address: 'tcp://{{ log_ip }}:514'
+      syslog-facility: daemon
+      tag: interop-docker
+    ports:
+      - "8081:8381"
+      - "8088:8388"
+      - "8089:8389"
+      - "9081:9381"
+      - "9088:9388"
+    env:
+      MULE_ENV: '{{inventory_hostname}}-interop-scheme-adapter'
+      SERVICE_8181_NAME: 'interop-scheme-adapter'
+      SERVICE_8188_NAME: 'interop-scheme-adapter'
+      SERVICE_9181_NAME: 'interop-scheme-adapter'
+      SERVICE_9188_NAME: 'interop-scheme-adapter'
+      MAX_JVM_MEMORY: '256'
+      dfsp-host: '{{ worker_host }}'
+      ilp-host: '{{ worker_host }}'
+      central-dir-env: 'mock'
+      proxy-host: '{{ worker_host }}'
+      central-dir-host: '{{ ist_host }}'
+      central-dir-api.port: '3000'
+      central-fraud-sharing-host: '{{ ist_host }}'
+      central-fraud-sharing-api.port: '3003'
+      mock-central-dir.host: '{{ ist_host }}'
+      mock-central-dir.port: '8088'
+      metrics.reporter.kafka.broker: '{{ metrics_host_port }}'
+      environment: '{{ inventory_hostname }}-{{ name_tag }}'
+      metrics.reporter.environment: '{{ inventory_hostname }}-{{ name_tag }}'
+      maxHttpThreadsActive: '16'
+      maxHttpThreadsIdle: '4'

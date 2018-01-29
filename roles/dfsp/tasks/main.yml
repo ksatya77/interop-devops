@@ -123,8 +123,8 @@
           ut_dfsp_api_dev_transfer__url: 'http://dfsp-transfer:8018'
           ut_dfsp_api_dev_ist__key: '{{ inventory_hostname }}'
           ut_dfsp_api_dev_ist__secret: '{{ inventory_hostname }}'
-          ut_dfsp_api_dev_ist__url: 'http://{{ api_hostname }}:8088/directory/v1'
-          ut_dfsp_api_dev_spsp__url: 'http://{{ api_hostname }}:8088/scheme/adapter/v1'
+          ut_dfsp_api_dev_ist__url: 'http://{{ api_hostname }}:8188/directory/v1'
+          ut_dfsp_api_dev_spsp__url: 'http://{{ api_hostname }}:8388/scheme/adapter/v1'
         networks:
           - name: MOJALOOP_NET
         log_driver: syslog

@@ -19,8 +19,8 @@ Steps for building:
 Pre-requisites:
 
 1.  SSH client and the correct ssh public key
-2.
-3.
+2.  Required software packages:  ansible,
+3.  Install the boto library. `sudo pip install boto`
 4.  AWS credential and config information
 
 Installation:

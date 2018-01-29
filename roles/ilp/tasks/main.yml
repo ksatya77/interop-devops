@@ -43,16 +43,16 @@
       env:
         ILP_SERVICE_PORT: 3045
         ILP_SERVICE_ILP_PREFIX: "{{ ilp_address_neighborhood }}.{{ inventory_hostname }}."
-        ILP_SERVICE_LEDGER_ROOT: '{{ ilp_base_url }}:8088/ilp/ledger/v1/'
-        ILP_SERVICE_LEDGER_ADMIN_ACCOUNT: '{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/admin'
+        ILP_SERVICE_LEDGER_ROOT: '{{ ilp_base_url }}:8288/ilp/ledger/v1/'
+        ILP_SERVICE_LEDGER_ADMIN_ACCOUNT: '{{ ilp_base_url }}:8288/ilp/ledger/v1/accounts/admin'
         ILP_SERVICE_LEDGER_ADMIN_USERNAME: admin
         ILP_SERVICE_LEDGER_ADMIN_PASSWORD: admin
         ILP_SERVICE_CENTRAL_CONNECTOR_ACCOUNT: "http://{{ ist_host_name }}:3002/accounts/{{ inventory_hostname }}"
         ILP_SERVICE_CENTRAL_CONNECTOR_PASSWORD: "{{ inventory_hostname }}"
         ILP_SERVICE_CENTRAL_CONNECTOR_USERNAME: "{{ inventory_hostname }}"
         ILP_SERVICE_CENTRAL_CONNECTOR_PREFIX: "{{ ilp_address_neighborhood }}.ist."
-        ILP_SERVICE_CONNECTOR_ACCOUNT: "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector"
-        ILP_SERVICE_BACKEND: "{{ ilp_base_url }}:8088/scheme/adapter/v1"
+        ILP_SERVICE_CONNECTOR_ACCOUNT: "{{ ilp_base_url }}:8288/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector"
+        ILP_SERVICE_BACKEND: "{{ ilp_base_url }}:8388/scheme/adapter/v1"
         DEBUG: "*"
 
   - name: Start ILP connector
@@ -83,7 +83,7 @@
               "currency": "USD",
               "plugin": "ilp-plugin-bells",
               "options": {
-                "account": "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector",
+                "account": "{{ ilp_base_url }}:8288/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector",
                 "password": "1234",
                 "username": "{{ inventory_hostname }}-testconnector",
                 "overrideInfo": {

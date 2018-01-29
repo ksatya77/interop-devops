@@ -82,19 +82,20 @@
       mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
       side_kms_url: 'ws://central-kms-test-825003705.us-west-2.elb.amazonaws.com/sidecar'
 
-- name: Pull IST ModusBox components
-  hosts: localhost
-  tags: mule_ist
-  become: yes
-  roles:
-    - role: mule_non_docker_pre_ist
+#- name: Pull IST ModusBox components
+#  hosts: localhost
+#  tags: mule_ist
+#  become: yes
+#  roles:
+#    - role: mule_non_docker_pre_ist
 
 - name: Install IST ModusBox components
   hosts: ists
   tags: mule_ist
   become: yes
   roles:
-    - role: mule_non_docker_ist
+#    - role: mule_non_docker_ist
+    - role: mule_ist
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
       worker_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
@@ -109,24 +110,25 @@
       log_ip: 172.17.0.1
       api_hostname: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
 
-- name: Pull ModusBox components
-  hosts: localhost
-  tags: mule
-  become: yes
-  roles:
-    - role: mule_non_docker_pre
+#- name: Pull ModusBox components
+#  hosts: localhost
+#  tags: mule
+#  become: yes
+#  roles:
+#    - role: mule_non_docker_pre
 
 - name: Install ModusBox components
   hosts: dfsps
   tags: mule
   become: yes
   roles:
-#    - role: mule
-    - role: mule_non_docker
+    - role: mule
+#    - role: mule_non_docker
       env_path: env/{{ env }}
-      log_ip: localhost
-      sandbox_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+      log_ip: 172.17.0.1
+      worker_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
       mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
+      ist_host: '{{ hostvars.ist1.ec2_facts.public_dns_name }}'
 
 - name:  Install Account and User Data
   hosts: mgmt
