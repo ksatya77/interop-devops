@@ -1,0 +1,85 @@
+#- include: plays/build_inventory.yml
+#  tags: always
+
+- name: Provision environment
+  hosts: localhost
+  connection: local
+  vars:
+    app_ingress_rules:
+      - proto: tcp
+        from_port: 8080
+        to_port: 8080
+        cidr_ip: 0.0.0.0/0
+    env_path_loc: env
+
+# Save for later when we can start using our own FQDN instead of EC2 ips/dns
+#  pre_tasks:
+#    - name: Add DNS zone
+#      route53_zone:
+#        zone: '{{ env_domain }}'
+#        state: present
+#      tags: dns
+  roles:
+
+
+#    - role: build_inventory
+#      tags: always
+
+    - role: clean_known_hosts
+      tags: always
+
+    - role: artifacts_azure
+      tags: always
+
+- name: Provision worker node(s)
+  hosts: localhost
+  tags: provision2, workers
+  roles:
+    - { role: provision_ec2_workers, become: yes }
+
+- name: Login to docker
+  hosts: localhost
+  tags: always
+  roles:
+    - role: login_docker
+
+- name: Install Central IST components
+  hosts: localhost
+  tags: ist
+  roles:
+    - role: ist
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      postgres_ip: 172.17.0.1
+      #mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
+      #side_kms_url: 'ws://central-kms-test-825003705.us-west-2.elb.amazonaws.com/sidecar'
+
+- name: Pull IST ModusBox components
+  hosts: localhost
+  tags: mule_ist
+  become: yes
+  roles:
+    - role: mule_non_docker_pre_ist
+
+- name: Install IST ModusBox components
+  hosts: localhost
+  tags: mule_ist
+  become: yes
+  roles:
+    - role: mule_non_docker_ist
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      worker_host: '{{ ist_host }}'
+      #mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
+
+#- name: Install Filebeat
+#  hosts: localhost
+#  tags: filebeat
+#  roles:
+#    - { role: filebeat, become: yes, mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}' }
+
+- name: Remove temporary artifact files
+  hosts: localhost
+  tags: cleanup
+  roles:
+    - role: clean_artifacts
