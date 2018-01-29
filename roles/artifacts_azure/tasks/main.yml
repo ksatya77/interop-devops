@@ -47,9 +47,9 @@
     dest: "artifacts/mule_artifacts/conf_ist/mule-l1p.properties.ist"
     block: |
       central-dir-env=mock
-      mock-central-dir.host={{ hostvars.ist1.ec2_facts.public_dns_name }}
+      mock-central-dir.host={{ ist_host }}
       mock-central-dir.port=8088
-      metrics.reporter.kafka.broker={{ hostvars.mgmt1.ec2_facts.public_dns_name }}:9092
+      metrics.reporter.kafka.broker={{ mgmt_host }}:9092
       environment=ist1-test
       metrics.reporter.environment=ist1-{{ name_tag }}
       maxHttpThreadsActive=16
