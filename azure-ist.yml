@@ -51,6 +51,7 @@
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
       postgres_ip: 172.17.0.1
+      worker_host: '{{ ist_host }}'
       #mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
       #side_kms_url: 'ws://central-kms-test-825003705.us-west-2.elb.amazonaws.com/sidecar'
 
