@@ -1,0 +1,99 @@
+    - name: Add Java 8 repository
+      become: true
+      apt_repository:
+        repo: 'ppa:webupd8team/java'
+        state: present
+
+    - name: Accept Java 8 License
+      become: yes
+      debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+
+    - name: add docker gpg key
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+    - name: add docker repo
+      shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+    - name: ensure apt cache is updated
+      action: apt update_cache=yes
+
+    - name: Install base dependencies for Docker
+      action: apt name={{item}}
+      with_items:
+        - aufs-tools
+        - cgroupfs-mount
+        - cgroup-lite
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+
+    - name: ensure all software and dependencies are installed
+      action: apt name={{item}}
+      with_items:
+        # - tmux
+        # - docker
+        # - python-dev
+        - python-setuptools
+        - emacs24
+        - docker-ce
+        - python-psycopg2
+        #- python27-psycopg2
+        - oracle-java8-installer
+        - ntp
+
+    - name: Install pip
+      easy_install:
+         name: pip
+         state: latest
+
+    - name: install certain python modules for docker
+      pip:
+         name: "{{ item.name }}"
+         version: "{{ item.version }}"
+         state: present
+      with_items:
+         - { name: docker-py, version: 1.10.6 }
+
+    - name: Set Docker to run
+      service:
+        name: docker
+        state: started
+
+    - name: copy over the inventory file for Dockers Ansible provisioning
+      become: false
+      copy:
+        src: inventory-file
+        dest: ~/inventory-file
+
+    - name: copy rsyslog setup 
+      copy:
+        src: artifacts/rsyslog.conf
+        dest: /etc/rsyslog.conf
+        force: yes
+
+    - service:
+        name: rsyslog
+        state: restarted
+
+    - copy:
+        src: artifacts/docker
+        dest: /etc/logrotate.d/
+        force: yes
+
+    - copy:
+        remote_src: yes
+        src: /etc/cron.daily/logrotate 
+        dest: /etc/cron.daily
+        force: yes
+    
+    - name: Setup /etc/hosts
+      become: false
+      copy:
+        src: artifacts/etchosts
+        dest: ~/etchosts
+   
+    - shell: cat /home/ubuntu/etchosts >> /etc/hosts
+
+    - name: Sync ntp
+      command: ntpdate -s ntp.ubuntu.com

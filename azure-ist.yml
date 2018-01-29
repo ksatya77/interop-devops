@@ -35,7 +35,7 @@
   hosts: localhost
   tags: provision2, workers
   roles:
-    - { role: provision_ec2_workers, become: yes }
+    - { role: provision_azure, become: yes }
 
 - name: Login to docker
   hosts: localhost
