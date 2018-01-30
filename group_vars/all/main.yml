@@ -67,7 +67,7 @@ vagrant_net_type: public_network #public_network or private_network
 metrics_host_port: ec2-35-164-199-6.us-west-2.compute.amazonaws.com:9092
 
 #Azure local install parameters
-mgmt_host: 18.219.32.77
-ist_host: 18.219.32.77
-dfsp1_host: 18.216.112.206
-dfsp2_host: 52.14.56.146
+mgmt_host: 18.217.64.82
+ist_host: 118.217.64.82
+dfsp1_host: 18.220.217.128
+dfsp2_host: 13.59.196.111
