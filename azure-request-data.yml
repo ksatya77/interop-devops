@@ -2,7 +2,7 @@
 #  tags: always
 
 - name:  Install Account and User Data
-  hosts: mgmt
+  hosts: localhost
   tags: request
   roles:
     - role: request_data_azure

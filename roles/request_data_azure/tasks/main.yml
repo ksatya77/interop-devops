@@ -1,15 +1,15 @@
 #  - name: Install initial user data
-#    shell: scripts/request_parm.sh {{ hostvars.ist1.ansible_host }} {{ hostvars.dfsp1.ansible_host }} {{ hostvars.dfsp2.ansible_host }}
+#    shell: scripts/request_parm.sh {{ hostvars.ist1.ansible_host }} {{ dfsp1_host }} {{ dfsp2_host }}
 #    delegate_to: localhost
 
 # IST Account Setup
-- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp1\",\"shortName\": \"dfsp1\",\"providerUrl\": \"http://{{ hostvars.dfsp1.ansible_host }}:8088/scheme/adapter/v1\"}' http://{{ ist_host }}:8088/mock/directory/v1/commands/register"
+- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp1\",\"shortName\": \"dfsp1\",\"providerUrl\": \"http://{{ dfsp1_host }}:8088/scheme/adapter/v1\"}' http://{{ ist_host }}:8088/mock/directory/v1/commands/register"
   register: output
 
 - debug:
     var: output.stdout
 
-- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp2\",\"shortName\": \"dfsp2\",\"providerUrl\": \"http://{{ hostvars.dfsp2.ansible_host }}:8088/scheme/adapter/v1\"}' http://{{ ist_host }}:8088/mock/directory/v1/commands/register"
+- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp2\",\"shortName\": \"dfsp2\",\"providerUrl\": \"http://{{ dfsp2_host }}:8088/scheme/adapter/v1\"}' http://{{ ist_host }}:8088/mock/directory/v1/commands/register"
   register: output
 
 - debug:
