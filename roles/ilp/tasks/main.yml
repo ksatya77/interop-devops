@@ -118,10 +118,10 @@
           [{
             "targetPrefix": "",
             "connectorLedger": "{{ ilp_address_neighborhood }}.ist.",
-            "connectorAccount": "{{ ilp_address_neighborhood }}.ist.{{ hostvars[inventory_hostname].peer_name }}"
+            "connectorAccount": "{{ ilp_address_neighborhood }}.ist.{{ peer_name }}"
           }]
         CONNECTOR_ROUTE_BROADCAST_ENABLED: 0
-        CONNECTOR_PEERS: "{{ hostvars[inventory_hostname].ILP_CONNECTOR_PEERS}}"
+        CONNECTOR_PEERS: "{{ ilp_central_ledger_prefix }}{{ peer_name }}"
         CONNECTOR_ROUTE_EXPIRY: 6000000000
         CONNECTOR_ROUTE_CLEANUP_INTERVAL: 6000000
         CONNECTOR_MIN_MESSAGE_WINDOW: 1
