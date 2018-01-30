@@ -11,13 +11,13 @@
       name: "dfsp1"
       groups: dfsps
       peer_name: "dfsp2"
-      ILP_CONNECTOR_PEERS: "{{ ilp_central_ledger_prefix }}{{ dfsp2_peer }}"
+      ILP_CONNECTOR_PEERS: "{{ ilp_central_ledger_prefix }}{{ peer_name }}"
 
   - add_host:
       name: "dfsp2"
       groups: dfsps
       peer_name: "dfsp1"
-      ILP_CONNECTOR_PEERS: "{{ ilp_central_ledger_prefix }}{{ dfsp1_peer }}"
+      ILP_CONNECTOR_PEERS: "{{ ilp_central_ledger_prefix }}{{ peer_name }}"
 
   - debug:
       var: hostvars
@@ -118,10 +118,10 @@
           [{
             "targetPrefix": "",
             "connectorLedger": "{{ ilp_address_neighborhood }}.ist.",
-            "connectorAccount": "{{ ilp_address_neighborhood }}.ist.{{ peer_name }}"
+            "connectorAccount": "{{ ilp_address_neighborhood }}.ist.{{ hostvars[inventory_hostname].peer_name }}"
           }]
         CONNECTOR_ROUTE_BROADCAST_ENABLED: 0
-        CONNECTOR_PEERS: "{{ILP_CONNECTOR_PEERS}}"
+        CONNECTOR_PEERS: "{{ hostvars[inventory_hostname].ILP_CONNECTOR_PEERS}}"
         CONNECTOR_ROUTE_EXPIRY: 6000000000
         CONNECTOR_ROUTE_CLEANUP_INTERVAL: 6000000
         CONNECTOR_MIN_MESSAGE_WINDOW: 1
