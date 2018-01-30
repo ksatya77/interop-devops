@@ -68,6 +68,6 @@ metrics_host_port: ec2-35-164-199-6.us-west-2.compute.amazonaws.com:9092
 
 #Azure local install parameters
 mgmt_host: 18.217.64.82
-ist_host: 118.217.64.82
+ist_host: 18.217.64.82
 dfsp1_host: 18.220.217.128
 dfsp2_host: 13.59.196.111
