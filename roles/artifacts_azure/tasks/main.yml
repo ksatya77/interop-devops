@@ -4,10 +4,10 @@
     create: yes
     dest: "artifacts/mule_artifacts/conf/mule-l1p.properties"
     block: |
-      dfsp-host={{ azure_dfsp }}
-      ilp-host={{ azure_dfsp }}
+      dfsp-host={{ azure_ip }}
+      ilp-host={{ azure_ip }}
       central-dir-env=mock
-      proxy-host={{ azure_dfsp }}
+      proxy-host={{ azure_ip }}
       central-dir-host={{ ist_host }}
       central-dir-api.port=3000
       central-fraud-sharing-host={{ ist_host }}
@@ -41,8 +41,8 @@
     create: yes
     dest: "artifacts/mule_artifacts/conf/adapter-mapping.properties"
     block: |
-      mapping-dfsp-host={{ azure_dfsp }}
-      mapping-proxy-host={{ azure_dfsp }}
+      mapping-dfsp-host={{ azure_ip }}
+      mapping-proxy-host={{ azure_ip }}
 
 #- name: Add the newly created EC2 instance(s) to /etc/hosts
 #  local_action:
