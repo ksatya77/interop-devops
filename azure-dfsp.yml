@@ -21,6 +21,9 @@
 #      tags: dns
   roles:
 
+    - role: build_azure_inventory
+      tags: always
+
     - role: artifacts_azure
       tags: always
 

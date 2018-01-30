@@ -1,0 +1,27 @@
+
+
+- name: Configure local inventory file
+  local_action:
+    module: blockinfile
+    create: yes
+    dest: "artifacts/hosts"
+    block: |
+      {{ mgmt_host }}  mgmt
+      {{ dfsp1_host }}  dfsp1
+      {{ dfsp2_host }}  dfsp2
+      {{ ist_host }}  ist
+
+- name: Build host groups
+  add_host:
+    hostname: '{{ item.host }}'
+    groups: '{{ item.group }}'
+    ansible_host: '{{ item.ip }}'
+    ansible_user: '{{ item.ansible_user }}'
+    peer_name: '{{ item.peer_name }}'
+  with_items: 
+    - {host: 'mgmt', ip: '{{ mgmt_host }}', group: 'mgmts', ansible_user: 'ubuntu', peer_name: 'mgmt'}
+    - {host: 'dfsp1', ip: '{{ dfsp1_host }}', group: 'dfsps', ansible_user: 'ubuntu', peer_name: 'dfsp2'}
+    - {host: 'dfsp2', ip: '{{ dfsp2_host }}', group: 'dfsps', ansible_user: 'ubuntu', peer_name: 'dfsp1'}
+    - {host: 'ist', ip: '{{ ist_host }}', group: 'ists', ansible_user: 'ubuntu', peer_name: 'ist'}
+  register: hostlist
+  delegate_to: localhost
