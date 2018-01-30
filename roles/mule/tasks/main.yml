@@ -43,7 +43,7 @@
       - "9081:9081"
       - "9088:9088"
     env:
-      MULE_ENV={{inventory_hostname}}-vagrant
+      MULE_ENV={{azure_host}}-vagrant
       SERVICE_8081_NAME=interop-docker
       SERVICE_8088_NAME=interop-docker
       SERVICE_9081_NAME=interop-docker

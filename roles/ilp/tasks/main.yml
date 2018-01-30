@@ -45,16 +45,16 @@
         "env": "ilp-service"
       env:
         ILP_SERVICE_PORT: 3045
-        ILP_SERVICE_ILP_PREFIX: "{{ ilp_address_neighborhood }}.{{ inventory_hostname }}."
+        ILP_SERVICE_ILP_PREFIX: "{{ ilp_address_neighborhood }}.{{ azure_host }}."
         ILP_SERVICE_LEDGER_ROOT: '{{ ilp_base_url }}:8088/ilp/ledger/v1/'
         ILP_SERVICE_LEDGER_ADMIN_ACCOUNT: '{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/admin'
         ILP_SERVICE_LEDGER_ADMIN_USERNAME: admin
         ILP_SERVICE_LEDGER_ADMIN_PASSWORD: admin
-        ILP_SERVICE_CENTRAL_CONNECTOR_ACCOUNT: "http://{{ ist_host_name }}:3002/accounts/{{ inventory_hostname }}"
-        ILP_SERVICE_CENTRAL_CONNECTOR_PASSWORD: "{{ inventory_hostname }}"
-        ILP_SERVICE_CENTRAL_CONNECTOR_USERNAME: "{{ inventory_hostname }}"
+        ILP_SERVICE_CENTRAL_CONNECTOR_ACCOUNT: "http://{{ ist_host_name }}:3002/accounts/{{ azure_host }}"
+        ILP_SERVICE_CENTRAL_CONNECTOR_PASSWORD: "{{ azure_host }}"
+        ILP_SERVICE_CENTRAL_CONNECTOR_USERNAME: "{{ azure_host }}"
         ILP_SERVICE_CENTRAL_CONNECTOR_PREFIX: "{{ ilp_address_neighborhood }}.ist."
-        ILP_SERVICE_CONNECTOR_ACCOUNT: "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector"
+        ILP_SERVICE_CONNECTOR_ACCOUNT: "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ azure_host }}-testconnector"
         ILP_SERVICE_BACKEND: "{{ ilp_base_url }}:8088/scheme/adapter/v1"
         DEBUG: "*"
 
@@ -82,13 +82,13 @@
         CONNECTOR_LEDGERS: >
 
           {
-            "{{ ilp_address_neighborhood }}.{{ inventory_hostname }}.": {
+            "{{ ilp_address_neighborhood }}.{{ azure_host }}.": {
               "currency": "USD",
               "plugin": "ilp-plugin-bells",
               "options": {
-                "account": "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector",
+                "account": "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ azure_host }}-testconnector",
                 "password": "1234",
-                "username": "{{ inventory_hostname }}-testconnector",
+                "username": "{{ azure_host }}-testconnector",
                 "overrideInfo": {
                   "scale": 2
                 }
@@ -101,9 +101,9 @@
               "currency": "USD",
               "plugin": "ilp-plugin-bells",
               "options": {
-                "account": "http://{{ ist_host_name }}:3002/accounts/{{ inventory_hostname }}",
-                "password": "{{ inventory_hostname }}",
-                "username": "{{ inventory_hostname }}",
+                "account": "http://{{ ist_host_name }}:3002/accounts/{{ azure_host }}",
+                "password": "{{ azure_host }}",
+                "username": "{{ azure_host }}",
                 "overrideInfo": {
                   "scale": 2
                 }
