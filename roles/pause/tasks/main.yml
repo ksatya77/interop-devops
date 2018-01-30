@@ -1,2 +1,5 @@
+- debug:
+    var: hostvars
+
 - pause:
     prompt: "Please complete the other DFSP install in another shell before continuing"
