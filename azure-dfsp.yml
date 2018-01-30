@@ -53,7 +53,7 @@
     - role: dfsp
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
-      api_hostname: '{{ ansible_host }}'
+      api_hostname: '{{ hostvars.{{ azure_dfsp }}.ansible_host }}'
 
 - name: Pull ModusBox components
   hosts: localhost
@@ -71,7 +71,7 @@
     - role: mule_non_docker
       env_path: env/{{ env }}
       log_ip: localhost
-      sandbox_host: '{{ ansible_host }}'
+      sandbox_host: '{{ hostvars.{{ azure_dfsp }}.ansible_host }}'
       mgmt_host: '{{ mgmt_host }}'
 
 - name:  Pause for other DFSP to be installed before running user data
@@ -93,8 +93,8 @@
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
       ist_host_name: '{{ ist_host }}'
-      ilp_host_name: '{{ ansible_host }}'
-      ilp_base_url: 'http://{{ ansible_host }}'
+      ilp_host_name: '{{ hostvars.{{ azure_dfsp }}.ansible_host }}'
+      ilp_base_url: 'http://{{ hostvars.{{ azure_dfsp }}.ansible_host }}'
       ilp_address_neighborhood: 'levelone'
       ilp_central_ledger_prefix: "levelone.ist."
 
