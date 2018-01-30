@@ -1,17 +1,17 @@
-base_url: "http://{{ hostvars[azure_host].ansible_host }}"
+base_url: "http://{{ hostvars[azure_dfsp].ansible_host }}"
 ilp_address_neighborhood: "levelone"
 ILP_LEDGER_ROOT: "{{ base_url }}:8088/ilp/ledger/v1/"
 ILP_LEDGER_ADMIN_ACCOUNT: "{{ ILP_LEDGER_ROOT }}accounts/admin"
 ILP_LEDGER_ADMIN_USERNAME: admin
 ILP_LEDGER_ADMIN_PASSWORD: admin
-ILP_LEDGER_PREFIX: "{{ ilp_address_neighborhood}}.{{ azure_host }}."
+ILP_LEDGER_PREFIX: "{{ ilp_address_neighborhood}}.{{ azure_dfsp }}."
 ILP_SERVICE_BACKEND: "{{ base_url }}:8088/scheme/adapter/v1"
 ILP_CLIENT_INVOICE_URL_TEMPLATE: "{{ base_url }}:3043/v1/receivers/invoices/{invoiceId}"
 ILP_CENTRAL_LEDGER_PREFIX: "{{ ilp_address_neighborhood }}.ist."
-ILP_CONNECTOR: "{{ ilp_address_neighborhood }}.{{ azure_host }}.{{ azure_host }}-testconnector"
-ILP_CONNECTOR_ACCOUNT: "{{ base_url }}:8088/ilp/ledger/v1/accounts/{{ azure_host }}-testconnector"
+ILP_CONNECTOR: "{{ ilp_address_neighborhood }}.{{ azure_dfsp }}.{{ azure_dfsp }}-testconnector"
+ILP_CONNECTOR_ACCOUNT: "{{ base_url }}:8088/ilp/ledger/v1/accounts/{{ azure_dfsp }}-testconnector"
 ILP_CONNECTOR_PASSWORD: "1234"
-ILP_CONNECTOR_CENTRAL_LEDGER_PASSWORD: "{{ azure_host }}"
+ILP_CONNECTOR_CENTRAL_LEDGER_PASSWORD: "{{ azure_dfsp }}"
 ILP_CONNECTOR_PEERS: "{{ ILP_CENTRAL_LEDGER_PREFIX }}{{ peer_name }}"
 CURRENCY: USD
 v_ilp_spsp_client_rest: v5.0.2

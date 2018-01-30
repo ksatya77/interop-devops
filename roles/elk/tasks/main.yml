@@ -59,7 +59,7 @@
     - replace:
         path: /etc/kibana/kibana.yml
         regexp: '^#server.name: "your-hostname"'
-        replace: 'server.name: "{{ azure_host }}-{{ name_tag }}"'
+        replace: 'server.name: "{{ azure_dfsp }}-{{ name_tag }}"'
 
 #  Using localhost for now out for now as we are using all of elk on the same host
     - replace:
