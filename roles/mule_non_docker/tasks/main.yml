@@ -12,13 +12,13 @@
   - name: copy Mule properties file to appropriate server
     become: yes
     copy:
-      src: artifacts/mule_artifacts/conf/mule-l1p.properties.{{ inventory_hostname | regex_replace('dfsp') }}
+      src: artifacts/mule_artifacts/conf/mule-l1p.properties
       dest: ~/mule-l1p.properties
 
   - name: copy Mule adapter-mapping file to appropriate server
     become: yes
     copy:
-      src: artifacts/mule_artifacts/conf/adapter-mapping.properties.{{ inventory_hostname | regex_replace('dfsp') }}
+      src: artifacts/mule_artifacts/conf/adapter-mapping.properties
       dest: ~/adapter-mapping.properties
 
   - name: Copy over mule
