@@ -113,7 +113,7 @@
           SERVICE_8010_NAME: 'dfsp-api'
           ut_dfsp_api_dev_account__url: 'http://dfsp-account:8009'
           ut_dfsp_api_dev_bulk__url: 'http://dfsp-transfer:8018'
-          ut_dfsp_api_dev_cluster: '{{ inventory_hostname }}-test'
+          ut_dfsp_api_dev_cluster: '{{ azure_dfsp }}-test'
           ut_dfsp_api_dev_directory__url: 'http://dfsp-directory:8011'
           ut_dfsp_api_dev_identity__url: 'http://dfsp-identity:8012'
           ut_dfsp_api_dev_ledger__url: 'http://dfsp-ledger:8014'
