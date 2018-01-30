@@ -19,6 +19,9 @@
       peer_name: "dfsp1"
       ILP_CONNECTOR_PEERS: "{{ ilp_central_ledger_prefix }}{{ dfsp1_peer }}"
 
+  - debug:
+      var: hostvars
+
 
   - name: Start the ILP Service
     become: true
