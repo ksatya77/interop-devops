@@ -1,5 +1,31 @@
 # devops
 
+Instructions for installing on Azure:
+
+
+1. Clone from GitHub - `git clone https://github.com/mojaloop/interop-devops.git`
+2. Change to the github repo - `cd interop-devops`
+3. Switch to the Azure branch - `git checkut Azure`
+4. Install ansible -  sudo apt-get update; sudo apt-get install -y software-properties-common; sudo apt-add-repository ppa:ansible/ansible; sudo apt-get update; sudo apt-get -y install ansible
+5. Update group_vars with the ip addresses for the hosts to be used
+
+
+Perform sequentially:
+
+1. Run install on ist - `ansible-playbook azure-ist.yml -e 'env=azure azure_ip=1.1.1.1'`
+2. Start install on dfsp1 - `ansible-playbook azure-dfsp.yml -e 'env=azure azure_dfsp=dfsp1 peer_name=dfsp2 azure_ip=<dfsp1 ip>'`
+3. Start install on dfsp2 - `ansible-playbook azure-dfsp.yml -e 'env=azure azure_dfsp=dfsp2 peer_name=dfsp1 azure_ip=<dfsp2 ip>'`
+4. Wait for pause
+5. Run user data install from any host: `ansible-playbook azure-request-data.yml`
+6. Go to `http://<dfsp address>:8010/documentation#!/samples/postSamples` and run the post samples for both dfsp hosts
+7. When complete, go back to each dfsp and press enter to continue install for ILP
+8. Test
+
+
+----- Original README.md -----
+
+
+
 Repo for devops, for various scenarios of deploying L1P system, currently in a local setting.
 
 Vagrant setup using ansible playbooks to create two dfsp and one ist VMs with support for mgmt VMs to allow execution on all supported platforms, including windows.
