@@ -15,8 +15,8 @@
       mock-central-dir.host={{ ist_host }}
       mock-central-dir.port=8088
       metrics.reporter.kafka.broker={{ metrics_host_port }}
-      environment=dfsp1-test
-      metrics.reporter.environment=dfsp1-{{ name_tag }}
+      environment={{ azure_dfsp }}-test
+      metrics.reporter.environment={{ azure_dfsp }}-{{ name_tag }}
       maxHttpThreadsActive=16
       maxHttpThreadsIdle=4
 
