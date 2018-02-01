@@ -5,19 +5,21 @@ Instructions for installing on Azure:
 
 1. Clone from GitHub - `git clone https://github.com/mojaloop/interop-devops.git`
 2. Change to the github repo - `cd interop-devops`
-3. Switch to the Azure branch - `git checkut Azure`
+3. Switch to the Azure branch - `git checkout Azure`
 4. Install ansible -  sudo apt-get update; sudo apt-get install -y software-properties-common; sudo apt-add-repository ppa:ansible/ansible; sudo apt-get update; sudo apt-get -y install ansible
-5. Update group_vars with the ip addresses for the hosts to be used
+5. Update group_vars with the ip addresses for the hosts to be used. Location of group_vars file is below:
+group_vars/all/main.yml 
+Update #Azure local install parameters section with the ip address of the host you are running on.
 
 
 Perform sequentially:
 
-1. Run install on ist - `ansible-playbook azure-ist.yml -e 'env=azure azure_ip=1.1.1.1'`
+1. Run install on ist - `ansible-playbook azure-ist.yml -e 'env=azure azure_dfsp=ist azure_ip=1.1.1.1'`
 2. Start install on dfsp1 - `ansible-playbook azure-dfsp.yml -e 'env=azure azure_dfsp=dfsp1 peer_name=dfsp2 azure_ip=<dfsp1 ip>'`
 3. Start install on dfsp2 - `ansible-playbook azure-dfsp.yml -e 'env=azure azure_dfsp=dfsp2 peer_name=dfsp1 azure_ip=<dfsp2 ip>'`
 4. Wait for pause
 5. Run user data install from any host: `ansible-playbook azure-request-data.yml`
-6. Go to `http://<dfsp address>:8010/documentation#!/samples/postSamples` and run the post samples for both dfsp hosts
+6. Go to `http://<dfsp address>:8010/documentation#!/samples/postSamples` and run the post samples for both dfsp hosts Username and password are dfsp1-test/dfsp1-test and dfsp2-test/dfsp2-test respectively.
 7. When complete, go back to each dfsp and press enter to continue install for ILP
 8. Test
 
