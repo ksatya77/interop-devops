@@ -19,10 +19,6 @@
       peer_name: "dfsp1"
       ILP_CONNECTOR_PEERS: "{{ ilp_central_ledger_prefix }}{{ peer_name }}"
 
-  - debug:
-      var: hostvars
-
-
   - name: Start the ILP Service
     become: true
     tags:
@@ -45,16 +41,16 @@
         "env": "ilp-service"
       env:
         ILP_SERVICE_PORT: 3045
-        ILP_SERVICE_ILP_PREFIX: "{{ ilp_address_neighborhood }}.{{ azure_dfsp }}."
+        ILP_SERVICE_ILP_PREFIX: "{{ ilp_address_neighborhood }}.{{ azure_dfsp | default(inventory_hostname) }}."
         ILP_SERVICE_LEDGER_ROOT: '{{ ilp_base_url }}:8088/ilp/ledger/v1/'
         ILP_SERVICE_LEDGER_ADMIN_ACCOUNT: '{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/admin'
         ILP_SERVICE_LEDGER_ADMIN_USERNAME: admin
         ILP_SERVICE_LEDGER_ADMIN_PASSWORD: admin
-        ILP_SERVICE_CENTRAL_CONNECTOR_ACCOUNT: "http://{{ ist_host_name }}:3002/accounts/{{ azure_dfsp }}"
-        ILP_SERVICE_CENTRAL_CONNECTOR_PASSWORD: "{{ azure_dfsp }}"
-        ILP_SERVICE_CENTRAL_CONNECTOR_USERNAME: "{{ azure_dfsp }}"
+        ILP_SERVICE_CENTRAL_CONNECTOR_ACCOUNT: "http://{{ ist_host_name }}:3002/accounts/{{ azure_dfsp | default(inventory_hostname) }}"
+        ILP_SERVICE_CENTRAL_CONNECTOR_PASSWORD: "{{ azure_dfsp | default(inventory_hostname) }}"
+        ILP_SERVICE_CENTRAL_CONNECTOR_USERNAME: "{{ azure_dfsp | default(inventory_hostname) }}"
         ILP_SERVICE_CENTRAL_CONNECTOR_PREFIX: "{{ ilp_address_neighborhood }}.ist."
-        ILP_SERVICE_CONNECTOR_ACCOUNT: "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ azure_dfsp }}-testconnector"
+        ILP_SERVICE_CONNECTOR_ACCOUNT: "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ azure_dfsp | default(inventory_hostname) }}-testconnector"
         ILP_SERVICE_BACKEND: "{{ ilp_base_url }}:8088/scheme/adapter/v1"
         DEBUG: "*"
 
@@ -82,13 +78,13 @@
         CONNECTOR_LEDGERS: >
 
           {
-            "{{ ilp_address_neighborhood }}.{{ azure_dfsp }}.": {
+            "{{ ilp_address_neighborhood }}.{{ azure_dfsp | default(inventory_hostname) }}.": {
               "currency": "USD",
               "plugin": "ilp-plugin-bells",
               "options": {
-                "account": "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ azure_dfsp }}-testconnector",
+                "account": "{{ ilp_base_url }}:8088/ilp/ledger/v1/accounts/{{ azure_dfsp | default(inventory_hostname) }}-testconnector",
                 "password": "1234",
-                "username": "{{ azure_dfsp }}-testconnector",
+                "username": "{{ azure_dfsp | default(inventory_hostname) }}-testconnector",
                 "overrideInfo": {
                   "scale": 2
                 }
@@ -101,9 +97,9 @@
               "currency": "USD",
               "plugin": "ilp-plugin-bells",
               "options": {
-                "account": "http://{{ ist_host_name }}:3002/accounts/{{ azure_dfsp }}",
-                "password": "{{ azure_dfsp }}",
-                "username": "{{ azure_dfsp }}",
+                "account": "http://{{ ist_host_name }}:3002/accounts/{{ azure_dfsp | default(inventory_hostname) }}",
+                "password": "{{ azure_dfsp | default(inventory_hostname) }}",
+                "username": "{{ azure_dfsp | default(inventory_hostname) }}",
                 "overrideInfo": {
                   "scale": 2
                 }

@@ -61,9 +61,9 @@
           SERVICE_8016_NAME: 'dfsp-rule'
           ut_dfsp_rule_dev_db__create__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_rule_dev_db__create__user: "{{ dfsp_pg_user }}"
-          ut_dfsp_rule_dev_db__db__database: '{{ azure_dfsp }}-rule'
+          ut_dfsp_rule_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-rule'
           ut_dfsp_rule_dev_db__db__password: "{{ dfsp_pg_pass }}"
-          ut_dfsp_rule_dev_db__db__user: '{{ azure_dfsp }}.rule'
+          ut_dfsp_rule_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.rule'
         log_driver: syslog
         log_options: 
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -113,7 +113,7 @@
           SERVICE_8010_NAME: 'dfsp-api'
           ut_dfsp_api_dev_account__url: 'http://dfsp-account:8009'
           ut_dfsp_api_dev_bulk__url: 'http://dfsp-transfer:8018'
-          ut_dfsp_api_dev_cluster: '{{ azure_dfsp }}-test'
+          ut_dfsp_api_dev_cluster: '{{ azure_dfsp | default(inventory_hostname) }}-test'
           ut_dfsp_api_dev_directory__url: 'http://dfsp-directory:8011'
           ut_dfsp_api_dev_identity__url: 'http://dfsp-identity:8012'
           ut_dfsp_api_dev_ledger__url: 'http://dfsp-ledger:8014'
@@ -121,8 +121,8 @@
           ut_dfsp_api_dev_rule__url: 'http://dfsp-rule:8016'
           ut_dfsp_api_dev_subscription__url: 'http://dfsp-subscription:8017'
           ut_dfsp_api_dev_transfer__url: 'http://dfsp-transfer:8018'
-          ut_dfsp_api_dev_ist__key: '{{ azure_dfsp }}'
-          ut_dfsp_api_dev_ist__secret: '{{ azure_dfsp }}'
+          ut_dfsp_api_dev_ist__key: '{{ azure_dfsp | default(inventory_hostname) }}'
+          ut_dfsp_api_dev_ist__secret: '{{ azure_dfsp | default(inventory_hostname) }}'
           ut_dfsp_api_dev_ist__url: 'http://{{ api_hostname }}:8088/directory/v1'
           ut_dfsp_api_dev_spsp__url: 'http://{{ api_hostname }}:8088/scheme/adapter/v1'
         networks:
@@ -149,9 +149,9 @@
           SERVICE_8018_NAME: 'dfsp-transfer'
           ut_dfsp_transfer_dev_db__create__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_transfer_dev_db__create__user: "{{ dfsp_pg_user }}"
-          ut_dfsp_transfer_dev_db__db__database: '{{ azure_dfsp }}-transfer'
+          ut_dfsp_transfer_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-transfer'
           ut_dfsp_transfer_dev_db__db__password: "{{ dfsp_pg_pass }}"
-          ut_dfsp_transfer_dev_db__db__user: '{{ azure_dfsp }}.transfer'
+          ut_dfsp_transfer_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.transfer'
         networks:
           - name: MOJALOOP_NET
         log_driver: syslog
@@ -205,10 +205,10 @@
           SERVICE_8014_NAME: 'dfsp-ledger'
           ut_dfsp_ledger_dev_db__create__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_ledger_dev_db__create__user: "{{ dfsp_pg_user }}"
-          ut_dfsp_ledger_dev_db__db__database: '{{ azure_dfsp }}-ledger'
+          ut_dfsp_ledger_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-ledger'
           ut_dfsp_ledger_dev_db__db__password: "{{ dfsp_pg_pass }}"
-          ut_dfsp_ledger_dev_db__db__user: '{{ azure_dfsp }}.ledger'
-          ut_dfsp_ledger_dev_httpserver__baseUrl: 'http://{{ azure_dfsp }}:8014/ledger'
+          ut_dfsp_ledger_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.ledger'
+          ut_dfsp_ledger_dev_httpserver__baseUrl: 'http://{{ azure_dfsp | default(inventory_hostname) }}:8014/ledger'
         log_driver: syslog
         log_options: 
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -234,9 +234,9 @@
           ut_dfsp_identity_dev_api__url: 'http://dfsp-api:8010'
           ut_dfsp_identity_dev_db__create__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_identity_dev_db__create__user: "{{ dfsp_pg_user }}"
-          ut_dfsp_identity_dev_db__db__database: '{{ azure_dfsp }}-identity'
+          ut_dfsp_identity_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-identity'
           ut_dfsp_identity_dev_db__db__password: "{{ dfsp_pg_pass }}"
-          ut_dfsp_identity_dev_db__db__user: '{{ azure_dfsp }}.identity'
+          ut_dfsp_identity_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.identity'
         log_driver: syslog
         log_options: 
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -261,9 +261,9 @@
           SERVICE_8017_NAME: 'dfsp-subscription'
           ut_dfsp_subscription_dev_db__create__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_subscription_dev_db__create__user: "{{ dfsp_pg_user }}"
-          ut_dfsp_subscription_dev_db__db__database: '{{ azure_dfsp }}-subscription'
+          ut_dfsp_subscription_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-subscription'
           ut_dfsp_subscription_dev_db__db__password: "{{ dfsp_pg_pass }}"
-          ut_dfsp_subscription_dev_db__db__user: '{{ azure_dfsp }}.subscription'
+          ut_dfsp_subscription_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.subscription'
         log_driver: syslog
         log_options: 
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -288,9 +288,9 @@
           SERVICE_8009_NAME: 'dfsp-account'
           ut_dfsp_account_dev_db__create__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_account_dev_db__create__user: "{{ dfsp_pg_user }}"
-          ut_dfsp_account_dev_db__db__database: '{{ azure_dfsp }}-account'
+          ut_dfsp_account_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-account'
           ut_dfsp_account_dev_db__db__password: "{{ dfsp_pg_pass }}"
-          ut_dfsp_account_dev_db__db__user: '{{ azure_dfsp }}.account'
+          ut_dfsp_account_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.account'
         log_driver: syslog
         log_options: 
           syslog-address: 'tcp://{{ log_ip }}:514'

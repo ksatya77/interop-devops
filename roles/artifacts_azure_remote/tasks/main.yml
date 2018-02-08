@@ -1,0 +1,97 @@
+- name: Configure Mule-l1p.properties files
+  local_action:
+    module: blockinfile
+    create: yes
+    dest: "artifacts/mule_artifacts/conf/mule-l1p.properties.1"
+    block: |
+      dfsp-host={{ hostvars.dfsp1.ansible_host }}
+      ilp-host={{ hostvars.dfsp1.ansible_host }}
+      central-dir-env=mock
+      proxy-host={{ hostvars.dfsp1.ansible_host }}
+      central-dir-host={{ hostvars.ist.ansible_host }}
+      central-dir-api.port=3000
+      central-fraud-sharing-host={{ hostvars.ist.ansible_host }}
+      central-fraud-sharing-api.port=3003
+      mock-central-dir.host={{ hostvars.ist.ansible_host }}
+      mock-central-dir.port=8088
+      metrics.reporter.kafka.broker={{ metrics_host_port }}
+      environment=dfsp1-test
+      metrics.reporter.environment=dfsp1-{{ name_tag }}
+      maxHttpThreadsActive=16
+      maxHttpThreadsIdle=4
+
+- local_action:
+    module: blockinfile
+    create: yes
+    dest: "artifacts/mule_artifacts/conf/mule-l1p.properties.2"
+    block: |
+      dfsp-host={{ hostvars.dfsp2.ansible_host }}
+      ilp-host={{ hostvars.dfsp2.ansible_host }}
+      central-dir-env=mock
+      proxy-host={{ hostvars.dfsp2.ansible_host }}
+      central-dir-host={{ hostvars.ist.ansible_host }}
+      central-dir-api.port=3000
+      central-fraud-sharing-host={{ hostvars.ist.ansible_host }}
+      central-fraud-sharing-api.port=3003
+      mock-central-dir.host={{ hostvars.ist.ansible_host }}
+      mock-central-dir.port=8088
+      metrics.reporter.kafka.broker={{ metrics_host_port }}
+      environment=dfsp2-test
+      metrics.reporter.environment=dfsp2-{{ name_tag }}
+      maxHttpThreadsActive=16
+      maxHttpThreadsIdle=4
+
+- local_action:
+    module: blockinfile
+    create: yes
+    dest: "artifacts/mule_artifacts/conf_ist/mule-l1p.properties.ist"
+    block: |
+      central-dir-env=mock
+      mock-central-dir.host={{ hostvars.ist.ansible_host }}
+      mock-central-dir.port=8088
+      metrics.reporter.kafka.broker={{ hostvars.mgmt.ansible_host }}:9092
+      environment=ist-test
+      metrics.reporter.environment=ist-{{ name_tag }}
+      maxHttpThreadsActive=16
+      maxHttpThreadsIdle=4
+
+- name: Configure adapter-mapping.properties
+  local_action:
+    module: blockinfile
+    create: yes
+    dest: "artifacts/mule_artifacts/conf/adapter-mapping.properties.1"
+    block: |
+      mapping-dfsp-host={{ hostvars.dfsp1.ansible_host }}
+      mapping-proxy-host={{ hostvars.dfsp1.ansible_host }}
+
+- local_action:
+    module: blockinfile
+    create: yes
+    dest: "artifacts/mule_artifacts/conf/adapter-mapping.properties.2"
+    block: |
+      mapping-dfsp-host={{ hostvars.dfsp2.ansible_host }}
+      mapping-proxy-host={{ hostvars.dfsp2.ansible_host }}
+
+- name: Add the newly created EC2 instance(s) to /etc/hosts
+  local_action:
+    module: lineinfile
+    dest: "artifacts/etchosts"
+    create: yes
+    insertafter: EOF
+    line: "{{ item.ip }} {{ item.hostname }}"
+  with_items:
+    - {ip: '{{hostvars.ist.ansible_host}}', hostname: 'ist'}
+    - {ip: '{{hostvars.mgmt.ansible_host}}', hostname: 'mgmt'}
+    - {ip: '{{hostvars.dfsp1.ansible_host}}', hostname: 'dfsp1'}
+    - {ip: '{{hostvars.dfsp2.ansible_host}}', hostname: 'dfsp2'}
+
+- name: Setup known_hosts
+  shell: /usr/bin/ssh-keyscan {{ item.ip }} >> ~/.ssh/known_hosts
+  with_items:
+    - {ip: '{{hostvars.ist.ansible_host}}'}
+    - {ip: '{{hostvars.mgmt.ansible_host}}'}
+    - {ip: '{{hostvars.dfsp1.ansible_host}}'}
+    - {ip: '{{hostvars.dfsp2.ansible_host}}'}
+
+
+

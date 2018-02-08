@@ -1,0 +1,17 @@
+---
+
+# DFSP1 User Setup
+- shell: "curl -H \"Content-Type: application/json\" -H \"Accept: application/json\" -H \"Authorization:Basic ZGZzcDEtdGVzdDpkZnNwMS10ZXN0\" -X POST http://{{ hostvars.dfsp1.ansible_host }}:8010/samples"
+  register: output
+
+- debug:
+    var: output.stdout
+
+
+# DFSP2 User Setup
+- shell: "curl -H \"Content-Type: application/json\" -H \"Accept: application/json\" -H \"Authorization:Basic ZGZzcDItdGVzdDpkZnNwMi10ZXN0\" -X POST http://{{ hostvars.dfsp2.ansible_host }}:8010/samples"
+  register: output
+
+- debug:
+    var: output.stdout
+
