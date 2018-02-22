@@ -1,0 +1,163 @@
+#- include: plays/build_inventory.yml
+#  tags: always
+
+- name: Initial env setup environment
+  hosts: localhost
+  connection: local
+  vars:
+    app_ingress_rules:
+      - proto: tcp
+        from_port: 8080
+        to_port: 8080
+        cidr_ip: 0.0.0.0/0
+    env_path_loc: env
+
+# Save for later when we can start using our own FQDN instead of EC2 ips/dns
+#  pre_tasks:
+#    - name: Add DNS zone
+#      route53_zone:
+#        zone: '{{ env_domain }}'
+#        state: present
+#      tags: dns
+  roles:
+
+    - role: build_azure_inventory
+      tags: always
+
+    - role: artifacts_azure_remote
+      tags: always
+
+#- name: Provision management node
+#  hosts: mgmt
+#  tags: provision2, mgmt
+#  roles:
+#    - { role: provision_ec2_mgmt, become: yes }
+#    - { role: provision_ec2_mgmt_nr, become: no }
+
+- name: Provision worker node(s)
+  hosts: ists, dfsps
+  tags: provision2, workers
+  roles:
+    - { role: provision_ec2_workers, become: yes }
+
+- name: Login to docker
+  hosts: dfsps, ists
+  tags: always
+  roles:
+    - role: login_docker
+
+- name: Install Central IST components
+  hosts: ists
+  tags: ist
+  roles:
+    - role: ist
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      postgres_ip: 172.17.0.1
+      worker_host: '{{ ist_host }}'
+      mgmt_host: '{{ mgmt_host }}'
+      side_kms_url: 'ws://central-kms-test-825003705.us-west-2.elb.amazonaws.com/sidecar'
+
+- name: Pull IST ModusBox components
+  hosts: localhost
+  tags: mule_ist
+  become: yes
+  roles:
+    - role: mule_non_docker_pre_ist
+
+- name: Install IST ModusBox components
+  hosts: ists
+  tags: mule_ist
+  become: yes
+  roles:
+    - role: mule_non_docker_ist
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      worker_host: '{{ ist_host }}'
+      mgmt_host: '{{ mgmt_host }}'
+
+- name:  Install DFSP components
+  hosts: dfsps
+  tags: dfsp
+  roles:
+    - role: dfsp
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      api_hostname: '{{ azure_ip | default(ansible_host) }}'
+
+- name: Pull ModusBox components
+  hosts: localhost
+  tags: mule
+  become: yes
+  roles:
+    - role: mule_non_docker_pre
+
+- name: Install ModusBox components
+  hosts: dfsps
+  tags: mule
+  become: yes
+  roles:
+#    - role: mule
+    - role: mule_non_docker
+      env_path: env/{{ env }}
+      log_ip: localhost
+      sandbox_host: '{{ azure_ip | default(ansible_host) }}'
+      mgmt_host: '{{ mgmt_host }}'
+
+- name:  Pause for other DFSP to be installed before running user data
+  hosts: localhost
+  tasks:
+    - include_role:
+        name: pause
+      when: remote == false
+
+- name:  Install Account Data
+  hosts: localhost
+  tags: request
+  tasks:
+    - include_role:
+        name: request_data_azure
+      when: remote == true
+
+- name:  Install Sample User Data
+  hosts: localhost
+  tags: users
+  roles:
+    - role: sample_data
+
+- name:  Install ILP components
+  hosts: dfsps
+  tags: ilp
+  roles:
+    - role: ilp
+      env_path: env/{{ env }}
+      log_ip: 172.17.0.1
+      ist_host_name: '{{ ist_host }}'
+      ilp_host_name: '{{ azure_ip | default(ansible_host) }}'
+      ilp_base_url: 'http://{{ azure_ip | default(ansible_host) }}'
+      ilp_address_neighborhood: 'levelone'
+      ilp_central_ledger_prefix: "levelone.ist."
+
+#- name:  Install ELK stack
+#  hosts: mgmt
+#  tags: elk
+#  roles:
+#    - { role: elk, become: yes, mgmt_host: '{{ mgmt_host }}' }
+#
+#- name: Install Filebeat
+#  hosts: dfsps, ists
+#  tags: filebeat
+#  roles:
+#    - { role: filebeat, become: yes, mgmt_host: '{{ mgmt_host }}' }
+#
+#- name: Install Curator
+#  hosts: mgmt
+#  tags: curator
+#  roles:
+#    - { role: curator, become: yes, mgmt_host: '{{ mgmt_host }}' }
+
+- name: Remove temporary artifact files
+  hosts: localhost
+  tags: cleanup
+  roles:
+    - role: clean_artifacts

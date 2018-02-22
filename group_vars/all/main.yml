@@ -67,9 +67,11 @@ vagrant_net_type: public_network #public_network or private_network
 metrics_host_port: ec2-35-164-199-6.us-west-2.compute.amazonaws.com:9092
 
 #Azure local install parameters
-mgmt_host: 18.217.108.152
-ist_host: 18.216.94.228
-dfsp1_host: 18.218.196.36
-dfsp2_host: 18.219.96.248
-ssh_key_file: ~/interop-dev1.pem
+mgmt_host: 52.168.31.86
+ist_host: 52.168.31.86
+dfsp1_host: 52.170.233.136
+dfsp2_host: 52.168.69.238
+ssh_key_file: ~/Downloads/wb_key.pem
+ssh_pass: Mojaloop2018
+ssh_user: azuser
 remote: true

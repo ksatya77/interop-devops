@@ -19,11 +19,12 @@
     ansible_user: '{{ item.ansible_user }}'
     peer_name: '{{ item.peer_name }}'
     ansible_ssh_private_key_file: '{{ssh_key_file}}'
-    ansible_python_interpreter: '/usr/bin/python3'
+    ansible_ssh_pass: '{{ ssh_pass }}'
+    #ansible_python_interpreter: '/usr/bin/python3'
   with_items: 
-    - {host: 'mgmt', ip: '{{ mgmt_host }}', group: 'mgmts', ansible_user: 'ubuntu', peer_name: 'mgmt'}
-    - {host: 'dfsp1', ip: '{{ dfsp1_host }}', group: 'dfsps', ansible_user: 'ubuntu', peer_name: 'dfsp2'}
-    - {host: 'dfsp2', ip: '{{ dfsp2_host }}', group: 'dfsps', ansible_user: 'ubuntu', peer_name: 'dfsp1'}
-    - {host: 'ist', ip: '{{ ist_host }}', group: 'ists', ansible_user: 'ubuntu', peer_name: 'ist'}
+    - {host: 'mgmt', ip: '{{ mgmt_host }}', group: 'mgmts', ansible_user: '{{ ssh_user }}', peer_name: 'mgmt'}
+    - {host: 'dfsp1', ip: '{{ dfsp1_host }}', group: 'dfsps', ansible_user: '{{ ssh_user }}', peer_name: 'dfsp2'}
+    - {host: 'dfsp2', ip: '{{ dfsp2_host }}', group: 'dfsps', ansible_user: '{{ ssh_user }}', peer_name: 'dfsp1'}
+    - {host: 'ist', ip: '{{ ist_host }}', group: 'ists', ansible_user: '{{ ssh_user }}', peer_name: 'ist'}
   register: hostlist
   delegate_to: localhost
