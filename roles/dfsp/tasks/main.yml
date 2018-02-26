@@ -14,11 +14,11 @@
           POSTGRES_PASSWORD: "{{ dfsp_pg_pass }}"
           POSTGRES_USER: "{{ dfsp_pg_user }}"
           SERVICE_5432_NAME: 'postgres'
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: postgres
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: postgres
         ports: 5432:5432
  
     - name: start dfsp-ussd
@@ -37,11 +37,11 @@
           ut_dfsp_ussd_dev_api__url: 'http://dfsp-api:8010'
           ut_dfsp_ussd_dev_identity__url: 'http://dfsp-identity:8012'
         links: postgres:postgres
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-ussd
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-ussd
         ports: 
           - 30019:30019
           - 8019:8019
@@ -64,11 +64,11 @@
           ut_dfsp_rule_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-rule'
           ut_dfsp_rule_dev_db__db__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_rule_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.rule'
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-rule
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-rule
         links: postgres:postgres
         ports: 
           - 30016:30016
@@ -92,11 +92,11 @@
           ut_dfsp_directory_dev_db__db__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_directory_dev_db__db__user: 'dfsp-directory'
         links: postgres:postgres
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-directory
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-directory
         ports: 
           - 30011:30011
           - 8011:8011
@@ -127,11 +127,11 @@
           ut_dfsp_api_dev_spsp__url: 'http://{{ api_hostname }}:8088/scheme/adapter/v1'
         networks:
           - name: MOJALOOP_NET
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-api
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-api
         links: postgres:postgres
         ports: 
           - 30010:30010
@@ -154,11 +154,11 @@
           ut_dfsp_transfer_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.transfer'
         networks:
           - name: MOJALOOP_NET
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-transfer
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-transfer
         links: postgres:postgres
         ports: 
           - 30018:30018
@@ -180,11 +180,11 @@
           UT_ENV: 'uat'
         networks:
           - name: MOJALOOP_NET
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-admin
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-admin
         links: postgres:postgres
         ports: 
           - 30020:30020
@@ -209,11 +209,11 @@
           ut_dfsp_ledger_dev_db__db__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_ledger_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.ledger'
           ut_dfsp_ledger_dev_httpserver__baseUrl: 'http://{{ azure_dfsp | default(inventory_hostname) }}:8014/ledger'
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-ledger
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-ledger
         links: postgres:postgres
         ports: 
           - 30014:30014
@@ -237,11 +237,11 @@
           ut_dfsp_identity_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-identity'
           ut_dfsp_identity_dev_db__db__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_identity_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.identity'
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-identity
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-identity
         links: postgres:postgres
         ports: 
           - 30012:30012
@@ -264,11 +264,11 @@
           ut_dfsp_subscription_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-subscription'
           ut_dfsp_subscription_dev_db__db__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_subscription_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.subscription'
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-subscription
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-subscription
         links: postgres:postgres
         ports: 
           - 30017:30017
@@ -291,11 +291,11 @@
           ut_dfsp_account_dev_db__db__database: '{{ azure_dfsp | default(inventory_hostname) }}-account'
           ut_dfsp_account_dev_db__db__password: "{{ dfsp_pg_pass }}"
           ut_dfsp_account_dev_db__db__user: '{{ azure_dfsp | default(inventory_hostname) }}.account'
-        log_driver: syslog
-        log_options: 
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: dfsp-account
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: dfsp-account
         links: postgres:postgres
         ports: 
           - 30009:30009
