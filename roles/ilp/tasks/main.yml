@@ -32,13 +32,13 @@
       recreate: yes
       ports:
         - "3045:3045"
-      log_driver: syslog
-      log_options:
-        "syslog-address": "tcp://{{ log_ip }}:514"
-        "syslog-facility": "daemon"
-        "tag": "ilp-service"
-        "labels": "ilp-service"
-        "env": "ilp-service"
+#      log_driver: syslog
+#      log_options:
+#        "syslog-address": "tcp://{{ log_ip }}:514"
+#        "syslog-facility": "daemon"
+#        "tag": "ilp-service"
+#        "labels": "ilp-service"
+#        "env": "ilp-service"
       env:
         ILP_SERVICE_PORT: 3045
         ILP_SERVICE_ILP_PREFIX: "{{ ilp_address_neighborhood }}.{{ azure_dfsp | default(inventory_hostname) }}."
@@ -65,13 +65,13 @@
       restart_policy: always
       recreate: yes
       pull: yes
-      log_driver: syslog
-      log_options:
-        "syslog-address": "tcp://{{ log_ip }}:514"
-        "syslog-facility": "daemon"
-        "tag": "ilp-connector"
-        "labels": "ilp-connector"
-        "env": "ilp-connector"
+#      log_driver: syslog
+#      log_options:
+#        "syslog-address": "tcp://{{ log_ip }}:514"
+#        "syslog-facility": "daemon"
+#        "tag": "ilp-connector"
+#        "labels": "ilp-connector"
+#        "env": "ilp-connector"
       env:
         # make sure there is a space before the JSON value otherwise ansible will run it as python (?!?!?)
 
