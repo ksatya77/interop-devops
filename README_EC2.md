@@ -19,17 +19,35 @@ Steps for building:
 Pre-requisites:
 
 1.  SSH client and the correct ssh public key
-2.
-3.
-4.  AWS credential and config information
+2.  Ansible (version TDB)
+3.  AWS credential and config information
 
 Installation:
 
-Amazon EC2 environment  (For the installation instructions to the Local L1P environment [click here](README.md))
+Amazon EC2 environment  (For the installation instructions to the Local MojaLoop environment [click here](README.md))
 
 1.  Unpack the devops image into a directory of your choice (base directory)
 2.  Create a .aws sub-directory in your home directory and copy the AWS config and credential files there.  If you do not have these but only the key id and secret key id, the awscli can be installed and run to configure and create these files
 3.  Execute the command `ansible-playbook create-ec2.yml -e "env=<env name>"`
+
+Azure environment (Still in development)
+
+A separate Azure specific branch has been created to support this installation type (Future: merge into master)
+
+Remote Azure install:
+
+1.  Pre create your azure instances (Ubuntu 16.04, 4gb+ RAM, 20gb+ disk)
+2.  Clone the github repo to your local machine
+3.  Switch to the Azure branch
+4.  Update the Azure section of group_vars/all/main.yml with your ip addresses and additional azure details required
+5.  Execute the command `ansible-playbook azure-remote.yml -e 'env=azure'`
+
+Local Azure install:
+
+1. Pre create your azure instances (Ubuntu 16.04, 4gb+ RAM, 20gb+ disk)
+2. Login to each host....
+***get the rest of these instructions from my mac install notes***
+
 
 Optional setup (Advanced):  The above command, without any modifiers, will install 1 Management node, 2 Financial Service Provider nodes, and 1 Central Services node with all components on each node.
 You can modify this setup via the use of tags within the Vagrantfile by editing the ansible provisioning command near the end of the file.
