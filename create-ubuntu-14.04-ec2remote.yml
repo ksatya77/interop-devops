@@ -138,23 +138,23 @@
       ilp_address_neighborhood: 'levelone'
       ilp_central_ledger_prefix: "levelone.ist."
 
-#- name:  Install ELK stack
-#  hosts: mgmt
-#  tags: elk
-#  roles:
-#    - { role: elk, become: yes, mgmt_host: '{{ mgmt_host }}' }
-#
-#- name: Install Filebeat
-#  hosts: dfsps, ists
-#  tags: filebeat
-#  roles:
-#    - { role: filebeat, become: yes, mgmt_host: '{{ mgmt_host }}' }
-#
-#- name: Install Curator
-#  hosts: mgmt
-#  tags: curator
-#  roles:
-#    - { role: curator, become: yes, mgmt_host: '{{ mgmt_host }}' }
+- name:  Install ELK stack
+  hosts: mgmt
+  tags: elk
+  roles:
+    - { role: elk, become: yes, mgmt_host: '{{ mgmt_host }}' }
+
+- name: Install Filebeat
+  hosts: dfsps, ists
+  tags: filebeat
+  roles:
+    - { role: filebeat, become: yes, mgmt_host: '{{ mgmt_host }}' }
+
+- name: Install Curator
+  hosts: mgmt
+  tags: curator
+  roles:
+    - { role: curator, become: yes, mgmt_host: '{{ mgmt_host }}' }
 
 - name: Remove temporary artifact files
   hosts: localhost

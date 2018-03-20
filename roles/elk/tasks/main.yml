@@ -12,6 +12,8 @@
         state: present
       with_items:
         - openjdk-8-jre
+        - python-passlib
+        - python-pip
 
     - name: Get Elasticsearch package
       become: yes
@@ -59,7 +61,7 @@
     - replace:
         path: /etc/kibana/kibana.yml
         regexp: '^#server.name: "your-hostname"'
-        replace: 'server.name: "{{ azure_dfsp }}-{{ name_tag }}"'
+        replace: 'server.name: "{{ inventory_hostname }}-{{ name_tag }}"'
 
 #  Using localhost for now out for now as we are using all of elk on the same host
     - replace:
@@ -220,6 +222,20 @@
         path: /etc/nginx/htpasswd.users
         name: "{{ kibana_user }}"
         password: "{{ kibana_pass }}"
+        state: present
+
+    - name: Setup the Kibana user in NGINX
+      htpasswd:
+        path: /etc/nginx/htpasswd.users
+        name: "user1"
+        password: "Mojaloop2018"
+        state: present
+
+    - name: Setup the Kibana user in NGINX
+      htpasswd:
+        path: /etc/nginx/htpasswd.users
+        name: "user2"
+        password: "Mojaloop2018"
         state: present
 
     - name: Copy NGINX config files over to the server
