@@ -21,11 +21,8 @@ filebeat.prospectors:
   paths:
     - /var/log/DockerRemote.log
     - /opt/mule/logs/mule-domain-interop-domain.log
-    - /opt/mule/logs/interop-dfsp-directory.log
     - /opt/mule/logs/interop-ilp-ledger.log
-    - /opt/mule/logs/interop-spsp-backend-services.log
-    - /opt/mule/logs/interop-spsp-clientproxy.log
-    - /opt/mule/logs/interop-scheme-adapter.log
+    - /opt/mule/logs/dfsp-scheme-adapter.log
   # Exclude lines. A list of regular expressions to match. It drops the lines that are
   # matching any regular expression from the list.
   #exclude_lines: ["^DBG"]
