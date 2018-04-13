@@ -1,9 +1,0 @@
-v_central_directory: v0.21.3
-v_central_ledger: sibos2
-v_central_ledger_admin: sibos2
-v_central_end_user_registry: v0.9.0
-v_central_fraud_sharing: v1.5.0
-v_central_kms: v0.7.9
-v_forensic_logging_sidecar: v0.12.0
-v_central_hub: sibos2
-v_postgres: 9.6.5

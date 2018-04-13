@@ -1,0 +1,9 @@
+v_central_directory: v1.1
+v_central_ledger: v1.1.8-base
+#v_central_ledger_admin: sibos2
+v_central_end_user_registry: snapshot
+#v_central_fraud_sharing: v1.5.0
+v_central_kms: snapshot
+v_forensic_logging_sidecar: v1.1-snapshot
+v_central_hub: v1.1-snapshot
+v_postgres: 9.6.5

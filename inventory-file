@@ -5,10 +5,10 @@ mgmt ansible_connection=local
 dfsp1
 dfsp2
 
-[ists]
-ist
+[switches]
+switch
 
 [workers]
 dfsp1
 dfsp2
-ist
+switch

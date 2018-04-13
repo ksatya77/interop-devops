@@ -32,18 +32,18 @@ name_tag: demo
 
 # Instance types:
 instance_type: m4.xlarge
-ist_ec2_type: '{{ instance_type }}'
+switch_ec2_type: '{{ instance_type }}'
 dfsp_ec2_type: '{{ instance_type }}'
 mgmt_ec2_type: '{{ instance_type }}'
 
 # Instance counts
 dfsp_ec2_count: 2
-ist_ec2_count: 1
+switch_ec2_count: 1
 mgmt_ec2_count: 1
 
 #Postgres Admin Accounts
-ist_pg_user: istadmin
-ist_pg_pass: istpass
+switch_pg_user: switchadmin
+switch_pg_pass: switchpass
 dfsp_pg_user: dfspadmin
 dfsp_pg_pass: dfsppass
 

@@ -16,7 +16,7 @@
     - { role: provision_mgmt_nr, become: no }
 
 - name: Provision worker node(s)
-  hosts: ists, dfsps
+  hosts: switches, dfsps
   tags: provision
   roles:
     - role: provision_workers
@@ -28,38 +28,38 @@
     - role: artifacts_local
 
 - name: Login to docker
-  hosts: ists, dfsps
+  hosts: switches, dfsps
   tags: auth
   roles:
     - role: login_docker
 
-- name: Install Central IST components
-  hosts: ists
-  tags: ist
+- name: Install Central SWITCH components
+  hosts: switches
+  tags: switch
   roles:
-    - role: ist
+    - role: switch
       env_path: /vagrant/env/local
       log_ip: '{{ hostvars.mgmt.ansible_host }}'
-      worker_host: '{{ hostvars.ist.ansible_host }}'
+      worker_host: '{{ hostvars.switch.ansible_host }}'
       mgmt_host: '{{ hostvars.mgmt.ansible_host }}'
       side_kms_url: ws://central-kms-test-825003705.us-west-2.elb.amazonaws.com/sidecar
 
-- name: Pull IST ModusBox components
+- name: Pull SWITCH ModusBox components
   hosts: localhost
-  tags: mule_ist
+  tags: mule_switch
   become: yes
   roles:
-    - role: mule_non_docker_pre_ist
+    - role: mule_non_docker_pre_switch
 
-- name: Install IST ModusBox components
-  hosts: ists
-  tags: mule_ist
+- name: Install SWITCH ModusBox components
+  hosts: switches
+  tags: mule_switch
   become: yes
   roles:
-    - role: mule_non_docker_ist
+    - role: mule_non_docker_switch
       env_path: /vagrant/env/local
       log_ip: '{{ hostvars.mgmt.ansible_host }}'
-      worker_host: '{{ hostvars.ist.ansible_host }}'
+      worker_host: '{{ hostvars.switch.ansible_host }}'
       mgmt_host: '{{ hostvars.mgmt.ansible_host }}'
 
 - name: Install DFSP components
@@ -86,7 +86,7 @@
     - role: mule_non_docker
       env_path: /vagrant/env/local
       log_ip: '{{ hostvars.mgmt.ansible_host }}'
-      worker_host: '{{ hostvars.ist.ansible_host }}'
+      worker_host: '{{ hostvars.switch.ansible_host }}'
       mgmt_host: '{{ hostvars.mgmt.ansible_host }}'
 
 - name:  Install Account and User Data
@@ -102,7 +102,7 @@
     - role: ilp
       env_path: /vagrant/env/local
       log_ip: '{{ hostvars.mgmt.ansible_host }}'
-      ist_host_name: '{{ hostvars.ist.ansible_host }}'
+      switch_host_name: '{{ hostvars.switch.ansible_host }}'
       ilp_host_name: '{{ ansible_hostname }}'
       ilp_base_url: 'http://{{ ansible_host }}'
       ilp_address_neighborhood: 'levelone'

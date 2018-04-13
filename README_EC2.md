@@ -2,7 +2,7 @@
 
 Repo for devops, for various scenarios of deploying L1P system, currently in a local setting.
 
-Vagrant setup using ansible playbooks to create two dfsp and one ist VMs with support for mgmt VMs to allow execution on all supported platforms, including windows.
+Vagrant setup using ansible playbooks to create two dfsp and one switch VMs with support for mgmt VMs to allow execution on all supported platforms, including windows.
 
 Contents:
 
@@ -35,13 +35,13 @@ Optional setup (Advanced):  The above command, without any modifiers, will insta
 You can modify this setup via the use of tags within the Vagrantfile by editing the ansible provisioning command near the end of the file.
 The following tags are currently available:
 eip - Used to control the binding of elastic ips at instance creation
-provision - Creation of hoat machines nodes (MGMT, DFSP and IST)
+provision - Creation of hoat machines nodes (MGMT, DFSP and SWITCH)
 provision2 - Provisioning of the software requirements
 auth - Used to cache authorization credentials for docker login to AWS ECR and jfrog repositories
 mgmt - Pre-requsite software provisioning for the management node
-ist - Installation of the Central Services components supplied by Dwolla
-ist_db - Used to control the creation of db users and objects (should be skipped after initial creation)
-mule_ist - Installation of the Central Services components supplied by ModusBox
+switch - Installation of the Central Services components supplied by Dwolla
+switch_db - Used to control the creation of db users and objects (should be skipped after initial creation)
+mule_switch - Installation of the Central Services components supplied by ModusBox
 dfsp - Installation of the Digital Service Provider parts supplied by Software Group
 mule - Installation of the Digital Service Provider parts supplied by ModusBox
 request - Creation of sample user data aka Bob and Alice
@@ -51,7 +51,7 @@ filebeat - Installation of filebeat which is used to move data into the ELK stac
 curator - Installation of the curator package which is used to manage index data for the ELK stack
 cleanup - Used to control the cleanup of the locally created artifact files from the installation process
 
-Example: `ansible-playbook create-ec2.yml -e "ec2-test" --skip-tags="provision, provision2, mgmt, dfsp, ist_db, mule, mule_ist, request, ilp, elk, filebeat, curator"` This command will only reinstall the ist software components without trying to reinstall the db users/objects.  All other roles will be skipped.
+Example: `ansible-playbook create-ec2.yml -e "ec2-test" --skip-tags="provision, provision2, mgmt, dfsp, switch_db, mule, mule_switch, request, ilp, elk, filebeat, curator"` This command will only reinstall the switch software components without trying to reinstall the db users/objects.  All other roles will be skipped.
 
 Notes:  
 
@@ -62,7 +62,7 @@ Usage:
 mgmt1-<name_tag> - The management console containing ELK and other mangement items.
 dfsp1-<name_tag> - dfsp worker node
 dfsp2-<name_tag> - dfsp worker node
-ist1-<name_tag> - ist worker node
+switch1-<name_tag> - switch worker node
 
 ## Configuration
 

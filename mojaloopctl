@@ -20,16 +20,16 @@ start)
   vagrant up
   vagrant ssh dfsp1 -c "~/startup.sh"
   vagrant ssh dfsp2 -c "~/startup.sh"
-  vagrant ssh ist -c "~/startup.sh"
+  vagrant ssh switch -c "~/startup.sh"
   ;;
 restart)
   echo "Stopping Mojaloop...\n"
   vagrant halt
   vagrant up
   case $2 in
-  ist)
-    echo "Restarting IST components only...\n"
-    vagrant ssh ist -c "~/startup.sh"
+  switch)
+    echo "Restarting SWITCH components only...\n"
+    vagrant ssh switch -c "~/startup.sh"
     ;;
   dfsps)
     echo "Restarting all DFSP components...\n"
@@ -46,19 +46,19 @@ restart)
     ;;
   all)
     echo "Restarting all Mojaloop components...\n"
-    vagrant ssh ist -c "~/startup.sh"
+    vagrant ssh switch -c "~/startup.sh"
     vagrant ssh dfsp1 -c "~/startup.sh"
     vagrant ssh dfsp2 -c "~/startup.sh"
     ;;
   *)
     echo "Restarting all Mojaloop components...\n"
-    vagrant ssh ist -c "~/startup.sh"
+    vagrant ssh switch -c "~/startup.sh"
     vagrant ssh dfsp1 -c "~/startup.sh"
     vagrant ssh dfsp2 -c "~/startup.sh"
     ;;
   esac
   ;;
 *)
-  Usage:  mojaloopctl init | start | restart [all|ist|dfsps|dfsp1|dfsp2] | stop | remove
+  Usage:  mojaloopctl init | start | restart [all|switch|dfsps|dfsp1|dfsp2] | stop | remove
   ;;
 esac

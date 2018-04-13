@@ -29,13 +29,13 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define :ist do |ist_config|
-    ist_config.vm.box = "ubuntu/trusty64"
-    ist_config.vm.hostname = "ist"
+  config.vm.define :switch do |switch_config|
+    switch_config.vm.box = "ubuntu/trusty64"
+    switch_config.vm.hostname = "switch"
     ######### Update the line below to match your network settings ###########
-    ist_config.vm.network "public_network", ip: "192.168.0.xxx", bridge: "en0: Wi-Fi (AirPort)"
-    #ist_config.vm.network "private_network", ip: "10.0.15.13"
-    ist_config.vm.provider "virtualbox" do |v|
+    switch_config.vm.network "public_network", ip: "192.168.0.xxx", bridge: "en0: Wi-Fi (AirPort)"
+    #switch_config.vm.network "private_network", ip: "10.0.15.13"
+    switch_config.vm.provider "virtualbox" do |v|
       v.memory = 1536
       v.cpus = 1
     end

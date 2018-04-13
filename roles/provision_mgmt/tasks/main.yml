@@ -4,6 +4,7 @@
     - dos2unix
     - python-pip
     - python-passlib
+    - git
 
 - name: Install python dependencies
   pip:

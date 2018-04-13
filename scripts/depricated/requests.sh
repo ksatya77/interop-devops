@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# IST User Setup
+# SWITCH User Setup
 curl -X POST -H "Authorization:Basic YWRtaW46YWRtaW4=" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"name": "dfsp1","shortName": "dfsp1","providerUrl": "http://10.0.15.11:8088/scheme/adapter/v1"}' http://10.0.15.13:3000/commands/register
 curl -X POST -H "Authorization:Basic YWRtaW46YWRtaW4=" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"name": "dfsp2","shortName": "dfsp2","providerUrl": "http://10.0.15.12:8088/scheme/adapter/v1"}' http://10.0.15.13:3000/commands/register
 curl -H "Content-Type: application/json" -X POST -d '{"name":"dfsp1","password":"dfsp1"}' http://10.0.15.13:3004/accounts

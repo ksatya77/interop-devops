@@ -1,10 +1,10 @@
-curl -X POST http://{{ hostvars.ist.host }}:3000/commands/register -H "Authorization:Basic YWRtaW46YWRtaW4=" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"name": "dfsp1","shortName": "dfsp1","providerUrl": "http://{{ hostvars.dfsp1.host }}:8088/scheme/adapter/v1"}'
+curl -X POST http://{{ hostvars.switch.host }}:3000/commands/register -H "Authorization:Basic YWRtaW46YWRtaW4=" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"name": "dfsp1","shortName": "dfsp1","providerUrl": "http://{{ hostvars.dfsp1.host }}:8088/scheme/adapter/v1"}'
 
-curl -X POST http://{{ hostvars.ist.host }}:3000/commands/register -H "Authorization:Basic YWRtaW46YWRtaW4=" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"name": "dfsp2","shortName": "dfsp2","providerUrl": "http://{{ hostvars.dfsp2.host }}:8088/scheme/adapter/v1"}'
+curl -X POST http://{{ hostvars.switch.host }}:3000/commands/register -H "Authorization:Basic YWRtaW46YWRtaW4=" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"name": "dfsp2","shortName": "dfsp2","providerUrl": "http://{{ hostvars.dfsp2.host }}:8088/scheme/adapter/v1"}'
 
-curl -X POST http://{{ hostvars.ist.host }}:3004/accounts -H "Content-Type: application/json" -d '{"name":"dfsp1","password":"dfsp1"}'
+curl -X POST http://{{ hostvars.switch.host }}:3004/accounts -H "Content-Type: application/json" -d '{"name":"dfsp1","password":"dfsp1"}'
 
-curl -X POST http://{{ hostvars.ist.host }}:3004/accounts -H "Content-Type: application/json" -d '{"name":"dfsp2","password":"dfsp2"}'
+curl -X POST http://{{ hostvars.switch.host }}:3004/accounts -H "Content-Type: application/json" -d '{"name":"dfsp2","password":"dfsp2"}'
 
 
 # DFSP1 User Setup

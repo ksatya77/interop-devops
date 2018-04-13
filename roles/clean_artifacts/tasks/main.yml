@@ -16,7 +16,7 @@
     - 2
 
 - file:
-    path: artifacts/mule_artifacts/conf_ist/mule-l1p.properties.ist
+    path: artifacts/mule_artifacts/conf_switch/mule-l1p.properties.switch
     state: absent
   delegate_to: localhost
 
@@ -35,7 +35,7 @@
 
 - name: Remove local Mule apps files
   find:
-    paths: "artifacts/mule_artifacts/apps_ist/"
+    paths: "artifacts/mule_artifacts/apps_switch/"
     pattern: "*.zip"
   delegate_to: localhost
   register: results
@@ -71,8 +71,8 @@
     state: absent
   delegate_to: localhost
 
-- name: Remove local IST Mule archive
+- name: Remove local SWITCH Mule archive
   file:
-    path: ./mule_ist.gz
+    path: ./mule_switch.gz
     state: absent
   delegate_to: localhost

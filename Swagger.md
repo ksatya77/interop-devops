@@ -47,7 +47,7 @@
 | ilp-spsp-server | 3043 |           |           |
 | ilp-connector | 3044 | [http://10.0.15.11:3044/v1](http://10.0.15.11:3044/v1) | [http://10.0.15.12:3044/v1](http://10.0.15.12:3044/v1) |
 
-### IST - Dwolla
+### SWITCH - Dwolla
 
 | Service | Port | URL |
 | ------- | -----| ----|
@@ -81,7 +81,7 @@
 #### ILP/SPSP
 * <TO BE FILLED>
 
-#### IST
+#### SWITCH
 * <TO BE FILLED>
 
 

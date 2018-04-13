@@ -7,7 +7,7 @@
   shell: cat /dev/zero | ssh-keygen -t rsa -q -N "" -f /home/vagrant/.ssh/id_rsa
 
 - name: Setup known_hosts file
-  shell: ssh-keyscan mgmt dfsp1 dfsp2 ist >> /home/vagrant/.ssh/known_hosts
+  shell: ssh-keyscan mgmt dfsp1 dfsp2 switch >> /home/vagrant/.ssh/known_hosts
 
 - name: Force ssh initial passwd auth
   shell: /usr/bin/sshpass -p vagrant ansible -i /vagrant/inventory-file all -m ping --ask-pass

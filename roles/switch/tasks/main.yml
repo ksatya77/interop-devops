@@ -1,11 +1,11 @@
 ---
     - include_vars:
-        file: versions/{{env}}/istversions.yml
+        file: versions/{{env}}/switchversions.yml
 
-    - name: Create the MOJALOOP IST docker network
+    - name: Create the MOJALOOP SWITCH docker network
       become: true
       docker_network:
-        name: ML_IST_NET
+        name: ML_SWITCH_NET
         state: present
 
     - name: start postgres
@@ -13,11 +13,11 @@
         name: postgres
         image: postgres:{{ v_postgres }}
         env:
-          POSTGRES_PASSWORD: "{{ ist_pg_pass }}"
-          POSTGRES_USER: "{{ ist_pg_user }}"
+          POSTGRES_PASSWORD: "{{ switch_pg_pass }}"
+          POSTGRES_USER: "{{ switch_pg_user }}"
           SERVICE_5432_NAME: 'postgres'
         networks:
-          - name: ML_IST_NET
+          - name: ML_SWITCH_NET
         ports: 5432:5432
         restart_policy: always
         log_driver: syslog
@@ -37,13 +37,13 @@
       postgresql_user:
         login_host: '{{ postgres_ip | default("localhost") }}'
         port: 5432
-        login_user: "{{ ist_pg_user }}"
-        login_password: "{{ ist_pg_pass }}"
+        login_user: "{{ switch_pg_user }}"
+        login_password: "{{ switch_pg_pass }}"
         name: "{{ item.name }}"
         password: "{{ item.passwd }}"
         role_attr_flags: SUPERUSER,CREATEROLE,CREATEDB,LOGIN
         state: present
-      tags: ist_db
+      tags: switch_db
       with_items:
         - { name: central_directory, passwd: "{{ cdir_pass }}" }
         - { name: central_ledger, passwd: "{{ cleg_pass }}" }
@@ -59,7 +59,7 @@
         login_user: "{{ item.name }}"
         owner: "{{ item.name }}"
         login_password: "{{ item.passwd }}"
-      tags: ist_db
+      tags: switch_db
       with_items:
         - { name: central_directory, passwd: "{{ cdir_pass }}" }
         - { name: central_ledger, passwd: "{{ cleg_pass }}" }
@@ -75,7 +75,7 @@
         state: started
         restart_policy: always
         networks:
-          - name: ML_IST_NET
+          - name: ML_SWITCH_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -117,7 +117,7 @@
         state: started
         restart_policy: always
         networks:
-          - name: ML_IST_NET
+          - name: ML_SWITCH_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -140,7 +140,7 @@
 #        state: started
 #        restart_policy: always
 #        networks:
-#          - name: ML_IST_NET
+#          - name: ML_SWITCH_NET
 #        log_driver: syslog
 #        log_options:
 #          syslog-address: 'tcp://{{ log_ip }}:514'
@@ -160,7 +160,7 @@
         state: started
         restart_policy: always
         networks:
-          - name: ML_IST_NET
+          - name: ML_SWITCH_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -183,7 +183,7 @@
         state: started
         restart_policy: always
         networks:
-          - name: ML_IST_NET
+          - name: ML_SWITCH_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -202,7 +202,7 @@
         state: started
         restart_policy: always
         networks:
-          - name: ML_IST_NET
+          - name: ML_SWITCH_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'
@@ -220,7 +220,7 @@
         state: started
         restart_policy: always
         networks:
-          - name: ML_IST_NET
+          - name: ML_SWITCH_NET
         log_driver: syslog
         log_options:
           syslog-address: 'tcp://{{ log_ip }}:514'

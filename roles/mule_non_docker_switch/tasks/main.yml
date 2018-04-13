@@ -12,7 +12,7 @@
   - name: copy Mule properties file to appropriate server
     become: yes
     copy:
-      src: artifacts/mule_artifacts/conf_ist/mule-l1p.properties.ist
+      src: artifacts/mule_artifacts/conf_switch/mule-l1p.properties.switch
       dest: ~/mule-l1p.properties
 
 #  - name: copy Mule adapter-mapping file to appropriate server
@@ -23,33 +23,33 @@
 
   - name: Copy over mule
     copy:
-      src: ./mule_ist.gz
-      dest: ~/mule_ist.gz
+      src: ./mule_switch.gz
+      dest: ~/mule_switch.gz
 
   - name: Unpack Mule
     unarchive:
-      src: ~/mule_ist.gz
+      src: ~/mule_switch.gz
       dest: ~/.
       remote_src: true
 
   - name: Ensure scripts have execute
     file:
-      path: /root/deploy/mule_standalone_ist.sh
+      path: /root/deploy/mule_standalone_switch.sh
       mode: 0755
 
   - file:
-      path: /root/deploy/deploy_mule_ist.sh
+      path: /root/deploy/deploy_mule_switch.sh
       mode: 0755
 
   - name: Deploy Mule Application
     become: true
-    shell: ./mule_standalone_ist.sh
+    shell: ./mule_standalone_switch.sh
     args:
       chdir: /root/deploy/
 
   - name: Deploy Mule Artifacts
     become: true
-    shell: ./deploy_mule_ist.sh
+    shell: ./deploy_mule_switch.sh
     args:
       chdir: /root/deploy/
 

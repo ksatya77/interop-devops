@@ -4,28 +4,28 @@
 #    shell: scripts/requests.sh
 #    delegate_to: localhost
     
-# IST Account Setup
-#- shell: "curl -X POST http://{{ hostvars.ist.ansible_host }}:3000/commands/register -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp1\",\"shortName\": \"dfsp1\",\"providerUrl\": \"http://{{ hostvars.dfsp1.ansible_host }}:8388/scheme/adapter/v1\"}'"
-- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp1\",\"shortName\": \"dfsp1\",\"providerUrl\": \"http://{{ hostvars.dfsp1.ansible_host }}:8388/scheme/adapter/v1\"}' http://{{ hostvars.ist.ansible_host }}:8088/mock/directory/v1/commands/register"
+# SWITCH Account Setup
+#- shell: "curl -X POST http://{{ hostvars.switch.ansible_host }}:3000/commands/register -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp1\",\"shortName\": \"dfsp1\",\"providerUrl\": \"http://{{ hostvars.dfsp1.ansible_host }}:8088/scheme/adapter/v1\"}'"
+- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp1\",\"shortName\": \"dfsp1\",\"providerUrl\": \"http://{{ hostvars.dfsp1.ansible_host }}:8088/scheme/adapter/v1\"}' http://{{ hostvars.switch.ansible_host }}:8088/mock/directory/v1/commands/register"
   register: output
 
 - debug:
     var: output.stdout
 
-#- shell: "curl -X POST http://{{ hostvars.ist.ansible_host }}:3000/commands/register -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp2\",\"shortName\": \"dfsp2\",\"providerUrl\": \"http://{{ hostvars.dfsp2.ansible_host }}:8388/scheme/adapter/v1\"}'"
-- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp2\",\"shortName\": \"dfsp2\",\"providerUrl\": \"http://{{ hostvars.dfsp2.ansible_host }}:8388/scheme/adapter/v1\"}' http://{{ hostvars.ist.ansible_host }}:8088/mock/directory/v1/commands/register"
+#- shell: "curl -X POST http://{{ hostvars.switch.ansible_host }}:3000/commands/register -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp2\",\"shortName\": \"dfsp2\",\"providerUrl\": \"http://{{ hostvars.dfsp2.ansible_host }}:8088/scheme/adapter/v1\"}'"
+- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp2\",\"shortName\": \"dfsp2\",\"providerUrl\": \"http://{{ hostvars.dfsp2.ansible_host }}:8088/scheme/adapter/v1\"}' http://{{ hostvars.switch.ansible_host }}:8088/mock/directory/v1/commands/register"
   register: output
 
 - debug:
     var: output.stdout
 
-- shell: "curl -X POST http://{{ hostvars.ist.ansible_host }}:3004/accounts -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp1\",\"password\":\"dfsp1\"}'"
+- shell: "curl -X POST http://{{ hostvars.switch.ansible_host }}:3004/accounts -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp1\",\"password\":\"dfsp1\"}'"
   register: output
 
 - debug:
     var: output.stdout
 
-- shell: "curl -X POST http://{{ hostvars.ist.ansible_host }}:3004/accounts -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp2\",\"password\":\"dfsp2\"}'"
+- shell: "curl -X POST http://{{ hostvars.switch.ansible_host }}:3004/accounts -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp2\",\"password\":\"dfsp2\"}'"
   register: output
 
 - debug:

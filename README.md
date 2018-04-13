@@ -2,7 +2,7 @@
 
 Repo for devops, for various scenarios of deploying L1P system, currently in a local setting.
 
-Vagrant setup using ansible playbooks to create two dfsp and one ist VMs with support for mgmt VMs to allow execution on all supported platforms, including windows.
+Vagrant setup using ansible playbooks to create two dfsp and one switch VMs with support for mgmt VMs to allow execution on all supported platforms, including windows.
 
 Contents:
 
@@ -63,16 +63,16 @@ Local L1P install (For the installation instructions to the Amazon EC2 environme
 
 Optional setup (Advanced):  The above command, without any modifiers, will install 1 Management node, 2 Financial Service Provider nodes, and 1 Central Services node with all components on each node.
 You can modify this setup via the use of tags within the Vagrantfile by editing the ansible provisioning command near the end of the file or by executing ansible-playbook on the command line.
-Example: `ansible-playbook create-local.yml -e "local" --skip-tags="provision, provision2, mgmt, ist, ist_db, mule_ist, request, elk, filebeat, curator"` This command will reinstall the dfsp, mule and ilp software components.  All other roles will be skipped.
+Example: `ansible-playbook create-local.yml -e "local" --skip-tags="provision, provision2, mgmt, switch, switch_db, mule_switch, request, elk, filebeat, curator"` This command will reinstall the dfsp, mule and ilp software components.  All other roles will be skipped.
 
 The following tags are currently available:
-provision - Creation of hoat machines nodes (MGMT, DFSP and IST)
+provision - Creation of hoat machines nodes (MGMT, DFSP and SWITCH)
 provision2 - Provisioning of the software requirements
 auth - Used to cache authorization credentials for docker login to AWS ECR and jfrog repositories
 mgmt - Pre-requsite software provisioning for the management node
-ist - Installation of the Central Services components supplied by Dwolla
-ist_db - Used to control the creation of db users and objects (should be skipped after initial creation)
-mule_ist - Installation of the Central Services components supplied by ModusBox
+switch - Installation of the Central Services components supplied by Dwolla
+switch_db - Used to control the creation of db users and objects (should be skipped after initial creation)
+mule_switch - Installation of the Central Services components supplied by ModusBox
 dfsp - Installation of the Digital Service Provider parts supplied by Software Group
 mule - Installation of the Digital Service Provider parts supplied by ModusBox
 request - Creation of sample user data aka Bob and Alice
@@ -93,7 +93,7 @@ Once the vagrant environment has been started, you should be able to connect to 
 mgmt - The management console used to run ansible commands and playbooks out to the worker nodes.
 dfsp1 - dfsp worker node
 dfsp2 - dfsp worker node
-ist - ist worker node
+switch - switch worker node
 
 example:  vagrant ssh mgmt
 

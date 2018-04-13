@@ -35,6 +35,6 @@ cat >> /etc/hosts <<EOL
 `grep -i public_network Vagrantfile | grep -i mgmt | cut -d "," -f 2 | cut -d "\"" -f 2`  mgmt
 `grep -i public_network Vagrantfile | grep -i dfsp1 | cut -d "," -f 2 | cut -d "\"" -f 2`  dfsp1
 `grep -i public_network Vagrantfile | grep -i dfsp2 | cut -d "," -f 2 | cut -d "\"" -f 2`  dfsp2
-`grep -i public_network Vagrantfile | grep -i ist | cut -d "," -f 2 | cut -d "\"" -f 2`  ist
+`grep -i public_network Vagrantfile | grep -i switch | cut -d "," -f 2 | cut -d "\"" -f 2`  switch
 EOL
 

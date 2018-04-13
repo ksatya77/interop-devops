@@ -20,7 +20,7 @@
   - name: Pull interop-mock-central-directory from Jfrog
     get_url:
       url: https://modusbox.jfrog.io/modusbox/libs-release/com/l1p/interop/interop-mock-central-directory/{{ v_interop_mock_central_directory }}/interop-mock-central-directory-{{ v_interop_mock_central_directory }}.zip
-      dest: artifacts/mule_artifacts/apps_ist/interop-mock-central-directory-{{ v_interop_mock_central_directory }}.zip
+      dest: artifacts/mule_artifacts/apps_switch/interop-mock-central-directory-{{ v_interop_mock_central_directory }}.zip
       url_username: "{{ mule_repo_user }}"
       url_password: "{{ mule_repo_pass }}"
     delegate_to: localhost
@@ -32,4 +32,4 @@
         - artifacts/requests
         - artifacts/mule_artifacts
         - artifacts/bulk
-      dest: ./mule_ist.gz
+      dest: ./mule_switch.gz

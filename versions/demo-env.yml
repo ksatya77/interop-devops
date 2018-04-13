@@ -31,12 +31,12 @@ ILP_CENTRAL_LEDGER_PREFIX: "{{ ilp_address_neighborhood }}.ist."
 ILP_CONNECTOR: "{{ ilp_address_neighborhood }}.{{ inventory_hostname }}.{{ inventory_hostname }}-testconnector"
 ILP_CONNECTOR_ACCOUNT: "{{ base_url }}:8088/ilp/ledger/v1/accounts/{{ inventory_hostname }}-testconnector"
 ILP_CONNECTOR_PASSWORD: "1234"
-ILP_CONNECTOR_CENTRAL_LEDGER_ACCOUNT: "http://{{ hostvars.ist1.ansible_host }}:3002/accounts/{{ inventory_hostname }}"
+ILP_CONNECTOR_CENTRAL_LEDGER_ACCOUNT: "http://{{ hostvars.switch1.ansible_host }}:3002/accounts/{{ inventory_hostname }}"
 ILP_CONNECTOR_CENTRAL_LEDGER_PASSWORD: "{{ inventory_hostname }}"
 ILP_CONNECTOR_PEERS: "{{ ILP_CENTRAL_LEDGER_PREFIX }}{{ peer_name }}"
 CURRENCY: USD
 
-# IST Environment Variables
+# SWITCH Environment Variables
 CDIR_DATABASE_URI=postgres://central_directory:cVq8iFqaLuHy8jjKuA@172.17.0.1:5432/central_directory
 CDIR_HOSTNAME=http://172.17.0.1:3000
 CDIR_END_USER_REGISTRY_URL=http://172.17.0.1:3001

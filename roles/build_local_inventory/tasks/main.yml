@@ -10,8 +10,8 @@
 - shell: "grep -i {{ vagrant_net_type }}  Vagrantfile | grep -i dfsp2 | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
   register: local_dfsp2
 
-- shell: "grep -i {{ vagrant_net_type }}  Vagrantfile | grep -i ist | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
-  register: local_ist
+- shell: "grep -i {{ vagrant_net_type }}  Vagrantfile | grep -i switch | cut -d \",\" -f 2 | cut -d \"\\\"\" -f 2"
+  register: local_switch
 
 - name: Configure local inventory file
   local_action:
@@ -22,7 +22,8 @@
       {{ local_mgmt.stdout }}  mgmt
       {{ local_dfsp1.stdout }}  dfsp1
       {{ local_dfsp2.stdout }}  dfsp2
-      {{ local_ist.stdout }}  ist
+      {{ local_switch.stdout }}  switch
+      127.0.0.1 localhost
 
 - name: Build host groups
   add_host:
@@ -35,5 +36,5 @@
     - {host: 'mgmt', ip: '{{ local_mgmt.stdout }}', group: 'mgmts', ansible_user: 'vagrant', peer_name: 'mgmt'}
     - {host: 'dfsp1', ip: '{{ local_dfsp1.stdout }}', group: 'dfsps', ansible_user: 'vagrant', peer_name: 'dfsp2'}
     - {host: 'dfsp2', ip: '{{ local_dfsp2.stdout }}', group: 'dfsps', ansible_user: 'vagrant', peer_name: 'dfsp1'}
-    - {host: 'ist', ip: '{{ local_ist.stdout }}', group: 'ists', ansible_user: 'vagrant', peer_name: 'ist'}
+    - {host: 'switch', ip: '{{ local_switch.stdout }}', group: 'switches', ansible_user: 'vagrant', peer_name: 'switch'}
   delegate_to: localhost

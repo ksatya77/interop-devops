@@ -23,6 +23,7 @@
         # - tmux
         # - docker
         # - python-dev
+        - python-pip
         - python-setuptools
         - emacs24
         - docker-ce
@@ -30,10 +31,11 @@
         #- python27-psycopg2
         - oracle-java8-installer
 
-    - name: Install pip
-      easy_install:
-         name: pip
-         state: latest
+    # Commented out easy_install due to conflict with pip 10.0.0b2
+    # - name: Install pip
+    #   easy_install:
+    #      name: pip
+    #      state: latest
 
     - name: install certain python modules for docker
       pip:

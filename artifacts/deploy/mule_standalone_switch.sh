@@ -25,7 +25,7 @@ cd /opt && tar xvzf ~/mule-standalone-${MULE_VERSION}.tar.gz && rm ~/mule-standa
 
 cp ~/mule-l1p.properties /opt/mule/conf
 cp ~/adapter-mapping.properties /opt/mule/conf
-cp ~/mule_artifacts/conf_ist/wrapper.conf /opt/mule/conf
+cp ~/mule_artifacts/conf_switch/wrapper.conf /opt/mule/conf
 #cp ~/mule_artifacts/lib/grizzly-http-servlet-2.3.24.jar /opt/mule/lib/user
 
 cp ~/deploy/mb_mule /etc/init.d/mb_mule

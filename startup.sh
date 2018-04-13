@@ -3,11 +3,11 @@
 box=`hostname`
 
 case $box in
-ist)
+switch)
   sudo /opt/mule/bin/mule stop
   echo "Starting Database...\n"
   for k in `sudo docker ps -a --format {{.ID}}:{{.Image}} | grep postgres | cut -d: -f1`; do sudo docker restart $k; done
-  echo "Starting Mojaloop IST components..\n"
+  echo "Starting Mojaloop SWITCH components..\n"
   for k in `sudo docker ps -a --format {{.ID}}`; do sudo docker start $k; done
   sudo /opt/mule/bin/mule start
   ;;

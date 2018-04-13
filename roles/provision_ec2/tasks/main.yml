@@ -18,7 +18,7 @@
       role: '{{ inst_role }}'
       environment: '{{ name_tag }}'
     instance_tags:
-      Name: "{{ l1p_type }}-{{ name_tag }}"
+      Name: "{{ name_tag }}-{{ l1p_type }}"
       L1Ptype: "{{ l1p_type }}"
       role: "{{ inst_role }}"
       environment: "{{ name_tag }}"
@@ -46,7 +46,7 @@
     resource: '{{ item.id }}'
     state: present
     tags:
-      Name: '{{ l1p_type }}{{ item.ami_launch_index|int + 1 }}-{{ name_tag }}'
+      Name: '{{ name_tag }}-{{ l1p_type }}{{ item.ami_launch_index|int + 1 }}'
   with_items: '{{ ec2.tagged_instances }}'
 
 # Save in case I need this to register the eip information
