@@ -71,7 +71,7 @@
     - name: start central-directory
       docker_container:
         name: central-directory
-        image: mojaloop/central-directory:{{v_central_directory}}
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-directory:{{v_central_directory}}
         state: started
         restart_policy: always
         networks:
@@ -113,7 +113,7 @@
     - name: start central-ledger
       docker_container:
         name: central-ledger
-        image: mojaloop/central-ledger:{{v_central_ledger}}
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-ledger:{{v_central_ledger}}
         state: started
         restart_policy: always
         networks:
@@ -179,7 +179,7 @@
     - name: start central-end-user-registry
       docker_container:
         name: central-end-user-registry
-        image: mojaloop/central-end-user-registry:{{v_central_end_user_registry}}
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-end-user-registry:{{v_central_end_user_registry}}
         state: started
         restart_policy: always
         networks:
@@ -195,28 +195,28 @@
           CREG_HOSTNAME: 'http://{{ worker_host }}:3001'
       become: true
 
-#    - name: start central-fraud-sharing
-#      docker_container:
-#        name: central-fraud-sharing
-#        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-fraud-sharing:{{v_central_fraud_sharing}}
-#        state: started
-#        restart_policy: always
-#        networks:
-#          - name: ML_SWITCH_NET
-#        log_driver: syslog
-#        log_options:
-#          syslog-address: 'tcp://{{ log_ip }}:514'
-#          syslog-facility: daemon
-#          tag: central-fraud-sharing
-#        ports: 3003:3002
-#        env:
-#          FSHARE_HOST_NAME: 'http://{{ worker_host }}'
-#      become: true
+    - name: start central-fraud-sharing
+      docker_container:
+        name: central-fraud-sharing
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-fraud-sharing:{{v_central_fraud_sharing}}
+        state: started
+        restart_policy: always
+        networks:
+          - name: ML_SWITCH_NET
+        log_driver: syslog
+        log_options:
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: central-fraud-sharing
+        ports: 3003:3002
+        env:
+          FSHARE_HOST_NAME: 'http://{{ worker_host }}'
+      become: true
 
     - name: start central-hub
       docker_container:
         name: central-hub
-        image: mojaloop/central-hub:{{v_central_hub}}
+        image: modusbox-level1-docker-release.jfrog.io/leveloneproject/central-hub:{{v_central_hub}}
         state: started
         restart_policy: always
         networks:

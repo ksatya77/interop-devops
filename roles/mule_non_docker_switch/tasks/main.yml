@@ -53,3 +53,46 @@
     args:
       chdir: /root/deploy/
 
+
+  - name: start postgres
+    docker_container:
+      name: postgres-interop
+      image: postgres:9.6.5
+      env:
+        POSTGRES_PASSWORD: "postgres"
+        POSTGRES_USER: "postgres"
+        SERVICE_5432_NAME: 'postgres'
+      ports: 8102:5432
+      restart_policy: always
+
+  - name: Waiting to make sure postgres is started
+    wait_for:
+      port: 8102
+      delay: 10
+
+  - postgresql_db:
+      login_host: '{{ worker_host }}'
+      port: 8102
+      login_user: postgres
+      login_password: postgres
+      name: mojaloop
+      encoding: UTF-8
+
+  - postgresql_user:
+      login_host: '{{ worker_host }}'
+      port: 8102
+      login_user: postgres
+      login_password: postgres
+      db: mojaloop
+      name: mojaloop
+      password: 0f44a46921c79f9e179e9947f5fb6bf3
+      encrypted: yes
+
+  - postgresql_schema:
+      login_host: '{{ worker_host }}'
+      port: 8102
+      login_user: postgres
+      login_password: postgres
+      name: switch
+      database: mojaloop
+      owner: mojaloop

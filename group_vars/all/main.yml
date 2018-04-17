@@ -12,23 +12,23 @@ volumes:
   - device_name: /dev/xvda
     volume_type: gp2
     volume_size: 30
-security_group_id: sg-b93036de #us-west-1
+#security_group_id: sg-b93036de #us-west-1
 #security_group_id: sg-b327dfc2 #us-east-1
-#security_group_id: sg-32915a5a #us-east-2
+security_group_id: sg-32915a5a #us-east-2
 #image: ami-5ec1673e # Change the AMI, from which you want to launch the server Amazon Linux
 #image: ami-7c22b41c # Change the AMI, from which you want to launch the server Ubuntu
-image: ami-1da8f27d # Ubuntu in us-west-1
+#image: ami-1da8f27d # Ubuntu in us-west-1
 #image: ami-772aa961 # Ubuntu in us-east-1
-#image: ami-25b69240 # Ubuntu in us-east-2
-ec2_region: us-west-1 # Change the Region
+image: ami-25b69240 # Ubuntu in us-east-2
+ec2_region: us-east-2 # Change the Region
 keypair: interop-dev1 # Change the keypair name
-vpc_subnet_id: subnet-a657b3fe #us-west-1a
+#vpc_subnet_id: subnet-a657b3fe #us-west-1a
 #vpc_subnet_id: subnet-d975b790 #us-east-1b
-#vpc_subnet_id: subnet-917c44db #us-east-2c
+vpc_subnet_id: subnet-917c44db #us-east-2c
 #vpc_subnet_id: subnet-be345fc8 #us-west-2a
 #vpc_subnet_id: subnet-3963305d #us-west-2b
 #vpc_subnet_id: subnet-95b207cd #us-west-2c
-name_tag: demo
+name_tag: jmp-sandbox
 
 # Instance types:
 instance_type: m4.xlarge

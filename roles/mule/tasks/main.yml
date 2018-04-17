@@ -8,14 +8,6 @@
 - include_vars:
     file: versions/{{ env }}/modusboxversions.yml
 
-- name: Login to Docker repository
-  become: true
-  docker_login:
-    registry: "modusbox-level1-docker.jfrog.io"
-    username: "modusbox"
-    password: "AP8BzLe1XaJQDNaZ2qdwtLtj9gW"
-    reauthorize: yes
-
 - name: Start interop-docker
   become: true
   docker_container:
