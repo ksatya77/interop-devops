@@ -16,13 +16,16 @@
     - name: Get Elasticsearch package
       become: yes
       get_url:
-        url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.4.3.deb
-        dest: ~/elasticsearch-5.4.3.deb
+        url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.deb      
+        # url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.4.3.deb
+        dest: ~/elasticsearch-6.2.4.deb
+        # dest: ~/elasticsearch-5.4.3.deb
 
     - name: Install Elasticsearch
       become: yes
       apt:
-        deb: ~/elasticsearch-5.4.3.deb
+        deb: ~/elasticsearch-6.2.4.deb
+        # deb: ~/elasticsearch-5.4.3.deb
 
     - name: Configure Elasticsearch
       lineinfile:
@@ -42,13 +45,16 @@
 
     - name: Download Kibana
       get_url:
-        url: https://artifacts.elastic.co/downloads/kibana/kibana-5.4.3-amd64.deb
-        dest: ~/kibana-5.4.3-amd64.deb
+        url: https://artifacts.elastic.co/downloads/kibana/kibana-6.2.4-amd64.deb
+        # url: https://artifacts.elastic.co/downloads/kibana/kibana-5.4.3-amd64.deb
+        dest: ~/kibana-6.2.4-amd64.deb
+        # dest: ~/kibana-5.4.3-amd64.deb
 
     - name: Install Kibana
       become: yes
       apt:
-        deb: ~/kibana-5.4.3-amd64.deb
+        deb: ~/kibana-6.2.4-amd64.deb
+        # deb: ~/kibana-5.4.3-amd64.deb
 
     - name: Configure Kibana
       replace:
@@ -240,48 +246,51 @@
         name: nginx
         state: restarted
 
-    - name:  Install Logstash
-      get_url:
-        url: https://artifacts.elastic.co/downloads/logstash/logstash-5.4.3.deb
-        dest: ~/logstash-5.4.3.deb
+    # - name:  Install Logstash
+    #   get_url:
+    #     url: https://artifacts.elastic.co/downloads/logstash/logstash-5.4.3.deb
+    #     dest: ~/logstash-5.4.3.deb
 
-    - apt:
-        deb: ~/logstash-5.4.3.deb
+    # - apt:
+    #     deb: ~/logstash-5.4.3.deb
 
-    - name: Configure Logstash
-      copy:
-        src: artifacts/log-pipeline.conf
-        dest: /etc/logstash/conf.d
+    # - name: Configure Logstash
+    #   copy:
+    #     src: artifacts/log-pipeline.conf
+    #     dest: /etc/logstash/conf.d
 
-    - copy:
-        src: artifacts/logstash
-        dest: /etc/logrotate.d/
+    # - copy:
+    #     src: artifacts/logstash
+    #     dest: /etc/logrotate.d/
 
 
-    - name:  Install workaround for the awesome print bug
-      become: yes
-      git:
-        repo: 'git://github.com/awesome-print/awesome_print.git'
-        dest: /root/awesome_print
+    # - name:  Install workaround for the awesome print bug
+    #   become: yes
+    #   git:
+    #     repo: 'git://github.com/awesome-print/awesome_print.git'
+    #     dest: /root/awesome_print
 
-    - shell: cp -r /root/awesome_print/lib/awesome_print/* /usr/share/logstash/vendor/bundle/jruby/1.9/gems/awesome_print-1.8.0/lib/awesome_print
-      become: yes
+    # - shell: cp -r /root/awesome_print/lib/awesome_print/* /usr/share/logstash/vendor/bundle/jruby/1.9/gems/awesome_print-1.8.0/lib/awesome_print
+    #   become: yes
 
-    - shell: rm -rf /root/awesome_print
-      become: yes
+    # - shell: rm -rf /root/awesome_print
+    #   become: yes
 
-    - name: Restart Logstash
-      service:
-        name: logstash
-        state: restarted
+    # - name: Restart Logstash
+    #   service:
+    #     name: logstash
+    #     state: restarted
     
     - name:  Install Metricbeat
       get_url: 
-        url: https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-5.4.3-amd64.deb
-        dest: ~/metricbeat-5.4.3-amd64.deb
+        url: https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.2.4-amd64.deb
+        # url: https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-5.4.3-amd64.deb
+        dest: ~/metricbeat-6.2.4-amd64.deb
+        # dest: ~/metricbeat-5.4.3-amd64.deb
 
     - apt:
-        deb: ~/metricbeat-5.4.3-amd64.deb
+        deb: ~/metricbeat-6.2.4-amd64.deb
+        # deb: ~/metricbeat-5.4.3-amd64.deb
 
     - name: Restart Metricbeat
       service:
@@ -290,13 +299,16 @@
     
     - name:  Install Heartbeat
       get_url: 
-        url: https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-5.4.3-amd64.deb
-        dest: ~/heartbeat-5.4.3-amd64.deb
+        url: https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-6.2.4-amd64.deb
+        # url: https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-5.4.3-amd64.deb
+        dest: ~/heartbeat-6.2.4-amd64.deb
+        # dest: ~/heartbeat-5.4.3-amd64.deb
 
     - apt:
-        deb: ~/heartbeat-5.4.3-amd64.deb
+        deb: ~/heartbeat-6.2.4-amd64.deb
+        # deb: ~/heartbeat-5.4.3-amd64.deb
 
     - name: Restart Heartbeat
       service:
-        name: heartbeat
+        name: heartbeat-elastic
         state:  restarted
