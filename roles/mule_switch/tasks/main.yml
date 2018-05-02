@@ -8,55 +8,55 @@
 - include_vars:
     file: versions/{{ env }}/modusboxversions.yml
 
-- name: Start interop-mock-central-directory
-  become: true
-  docker_container:
-    name: interop-mock-central-directory
-    image: "modusbox-level1-docker-release.jfrog.io/leveloneproject/interop-mock-central-directory:{{ v_interop_mock_central_directory }}"
-    restart_policy: always
-    state: started
-    networks:
-      - name: MOJALOOP_NET
-    restart: yes
-    volumes: 
-      - "/opt/mule/logs:/opt/mule/logs"
-      - "/opt/mule/apps:/opt/mule/apps"
-      - "/opt/mule/domains:/opt/mule/domains"
-      - "/opt/mule/conf:/opt/mule/conf"
-    log_driver: syslog
-    log_options: 
-      syslog-address: 'tcp://{{ log_ip }}:514'
-      syslog-facility: daemon
-      tag: interop-docker
-    ports:
-      - "8081:8081"
-      - "8088:8088"
-      - "8089:8089"
-      - "9081:9081"
-      - "9088:9088"
-    env:
-      MULE_ENV: '{{inventory_hostname}}-interop-mock-central-directory'
-      SERVICE_8181_NAME: 'interop-mock-central-directory'
-      SERVICE_8188_NAME: 'interop-mock-central-directory'
-      SERVICE_9181_NAME: 'interop-mock-central-directory'
-      SERVICE_9188_NAME: 'interop-mock-central-directory'
-      MAX_JVM_MEMORY: '256'
-      central-dir-env: 'mock'
-      mock-central-dir.host: '{{ worker_host }}'
-      mock-central-dir.port: '8088'
-      metrics.reporter.kafka.broker: '{{ metrics_host_port }}'
-      environment: 'switch1-test'
-      metrics.reporter.environment: 'switch1-{{ name_tag }}'
-      maxHttpThreadsActive: '16'
-      maxHttpThreadsIdle: '4'
+#- name: Start interop-mock-central-directory
+#  become: true
+#  docker_container:
+#    name: interop-mock-central-directory
+#    image: "modusbox-level1-docker-release.jfrog.io/leveloneproject/interop-mock-central-directory:{{ v_interop_mock_central_directory }}"
+#    restart_policy: always
+#    state: started
+#    networks:
+#      - name: MOJALOOP_NET
+#    restart: yes
+#    volumes:
+#      - "/opt/mule/logs:/opt/mule/logs"
+#      - "/opt/mule/apps:/opt/mule/apps"
+#      - "/opt/mule/domains:/opt/mule/domains"
+#      - "/opt/mule/conf:/opt/mule/conf"
+#    log_driver: syslog
+#    log_options:
+#      syslog-address: 'tcp://{{ log_ip }}:514'
+#      syslog-facility: daemon
+#      tag: interop-docker
+#    ports:
+#      - "8081:8081"
+#      - "8088:8088"
+#      - "8089:8089"
+#      - "9081:9081"
+#      - "9088:9088"
+#    env:
+#      MULE_ENV: '{{inventory_hostname}}-interop-mock-central-directory'
+#      SERVICE_8181_NAME: 'interop-mock-central-directory'
+#      SERVICE_8188_NAME: 'interop-mock-central-directory'
+#      SERVICE_9181_NAME: 'interop-mock-central-directory'
+#      SERVICE_9188_NAME: 'interop-mock-central-directory'
+#      MAX_JVM_MEMORY: '256'
+#      central-dir-env: 'mock'
+#      mock-central-dir.host: '{{ worker_host }}'
+#      mock-central-dir.port: '8088'
+#      metrics.reporter.kafka.broker: '{{ metrics_host_port }}'
+#      environment: 'switch1-test'
+#      metrics.reporter.environment: 'switch1-{{ name_tag }}'
+#      maxHttpThreadsActive: '16'
+#      maxHttpThreadsIdle: '4'
 
 - name: start postgres
   docker_container:
     name: postgres-interop
     image: postgres:9.6.5
     env:
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_USER: 'postgres'
       SERVICE_5432_NAME: 'postgres'
     ports: 8102:5432
     restart_policy: always
@@ -92,3 +92,96 @@
     name: switch
     database: mojaloop
     owner: mojaloop
+
+#- name: Run psql
+#  shell: create_table_switch.participant_fsp_mapping.sh
+#  register: result
+#  changed_when: "'Table created' in result.stdout"
+
+- name: Start interop-routing
+  become: true
+  docker_container:
+    name: interop-routing
+    image: "mojaloop/interop-routing:{{ v_interop_routing }}"
+    restart_policy: always
+    state: started
+    restart: yes
+    log_driver: syslog
+    log_options:
+      syslog-address: 'tcp://{{ log_ip }}:514'
+      syslog-facility: daemon
+      tag: interop-account-lookup
+    ports:
+      - "8088:8088"
+    env:
+      SERVICE_8088_NAME: 'interop-routing'
+      MAX_JVM_MEMORY: '256'
+#      proxy-host: '{{ worker_host }}'
+#      central-services-host: '{{ worker_host }}'
+#      metrics.reporter.kafka.broker: '{{ mgmt_host }}:9092'
+#      metrics.reporter.environment: '{{ name_tag }}'
+      ROUTING_SERVICE_HOST: 'localhost'
+      ROUTING_SERVICE_PORT: '8088'
+      SWITCH_SERVICE_HOST: 'localhost'
+      SWITCH_SERVICE_PORT: '8089'
+      ACCOUNT_LOOKUP_SERVICE_HOST: 'localhost'
+      ACCOUNT_LOOKUP_SERVICE_PORT: '8090'
+
+- name: Start interop-switch
+  become: true
+  docker_container:
+    name: interop-switch
+    image: "mojaloop/interop-switch:{{ v_interop_switch }}"
+    restart_policy: always
+    state: started
+    networks:
+      - name: MOJALOOP_NET
+    restart: yes
+    log_driver: syslog
+    log_options:
+      syslog-address: 'tcp://{{ log_ip }}:514'
+      syslog-facility: daemon
+      tag: interop-docker
+    ports:
+      - "8089:8088"
+    env:
+      SERVICE_8088_NAME: 'interop-switch'
+      MAX_JVM_MEMORY: '256'
+      proxy-host: '{{ worker_host }}'
+      account-lookup-service.host: '{{ worker_host }}'
+      account-lookup-service.port: '8089'
+      central-services-host: '{{ worker_host }}'
+      central-ledger.host: '{{ worker_host }}'
+      central-ledger.port: '3002'
+      metrics.reporter.kafka.broker: '{{ mgmt_host }}:9092'
+      metrics.reporter.environment: '{{ name_tag }}'
+
+- name: Start interop-account-lookup
+  become: true
+  docker_container:
+    name: interop-account-lookup
+    image: "mojaloop/interop-account-lookup:{{ v_interop_account_lookup }}"
+    restart_policy: always
+    state: started
+    networks:
+      - name: MOJALOOP_NET
+    restart: yes
+    log_driver: syslog
+    log_options:
+      syslog-address: 'tcp://{{ log_ip }}:514'
+      syslog-facility: daemon
+      tag: interop-docker
+    ports:
+      - "8090:8088"
+    env:
+      SERVICE_8088_NAME: 'interop-account-lookup'
+      MAX_JVM_MEMORY: '256'
+      proxy-host: '{{ worker_host }}'
+      central-services-host: '{{ worker_host }}'
+      metrics.reporter.kafka.broker: '{{ mgmt_host }}:9092'
+      metrics.reporter.environment: '{{ name_tag }}'
+      SWITCH_SERVICE_HOST: '{{ worker_host }}'
+      SWITCH_SERVICE_PORT: '9000'
+      PSQL_HOST: 'localhost'
+      PSQL_PORT: '8102'
+

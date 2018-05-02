@@ -82,20 +82,20 @@
       mgmt_host: '{{ hostvars.mgmt1.ec2_facts.public_dns_name }}'
       side_kms_url: 'ws://central-kms-test-825003705.us-west-2.elb.amazonaws.com/sidecar'
 
-- name: Pull SWITCH ModusBox components
-  hosts: localhost
-  tags: mule_switch
-  become: yes
-  roles:
-    - role: mule_non_docker_pre_switch
+#- name: Pull SWITCH ModusBox components
+#  hosts: localhost
+#  tags: mule_switch
+#  become: yes
+#  roles:
+#    - role: mule_non_docker_pre_switch
 
 - name: Install SWITCH ModusBox components
   hosts: switches
   tags: mule_switch
   become: yes
   roles:
-    - role: mule_non_docker_switch
-#    - role: mule_switch
+#    - role: mule_non_docker_switch
+    - role: mule_switch
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
       worker_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
@@ -110,20 +110,20 @@
       log_ip: 172.17.0.1
       api_hostname: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
 
-- name: Pull ModusBox components
-  hosts: localhost
-  tags: mule
-  become: yes
-  roles:
-    - role: mule_non_docker_pre
+#- name: Pull ModusBox components
+#  hosts: localhost
+#  tags: mule
+#  become: yes
+#  roles:
+#    - role: mule_non_docker_pre
 
 - name: Install ModusBox components
   hosts: dfsps
   tags: mule
   become: yes
   roles:
-#    - role: mule
-    - role: mule_non_docker
+    - role: mule
+#    - role: mule_non_docker
       env_path: env/{{ env }}
       log_ip: 172.17.0.1
       worker_host: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'

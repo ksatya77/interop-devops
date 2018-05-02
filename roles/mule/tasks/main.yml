@@ -8,11 +8,11 @@
 - include_vars:
     file: versions/{{ env }}/modusboxversions.yml
 
-- name: Start interop-docker
+- name: Start dfsp-scheme-adapter
   become: true
   docker_container:
-    name: devMule
-    image: "modusbox-level1-docker.jfrog.io/interop-docker:{{ v_interop_docker }}"
+    name: dfsp-scheme-adapter
+    image: "mojaloop/dfsp-scheme-adapter:{{ v_dfsp_scheme_adapter }}"
     restart_policy: always
     state: started
     networks:
@@ -25,34 +25,30 @@
       - "/opt/mule/conf:/opt/mule/conf"
     log_driver: syslog
     log_options: 
-      syslog-address: tcp://10.0.15.10:514
+      syslog-address: 'tcp://{{ log_ip }}:514'
       syslog-facility: daemon
-      tag: interop-docker
+      tag: dfsp-scheme-adapter
     ports:
-      - "8081:8081"
       - "8088:8088"
-      - "8089:8089"
-      - "9081:9081"
-      - "9088:9088"
     env:
-      MULE_ENV={{inventory_hostname}}-vagrant
-      SERVICE_8081_NAME=interop-docker
-      SERVICE_8088_NAME=interop-docker
-      SERVICE_9081_NAME=interop-docker
-      SERVICE_9088_NAME=interop-docker
-      MAX_JVM_MEMORY=256
+      MOJALOOP_HOST: '{{ switch_host }}'
+      MOJALOOP_PORT: '8088'
+      DFSP_HOST: 'localhost'
+      DFSP_API_PORT: '8010'
+      DFSP_LEDGER_PORT: '8014'
+      MAX_JVM_MEMORY: '256'
 
-- name: copy mule domain
-  synchronize:
-    src: /vagrant/artifacts/mule_artifacts/domains
-    dest: /opt/mule
-
-- name: copy mule apps
-  synchronize:
-    src: /vagrant/artifacts/mule_artifacts/apps
-    dest: /opt/mule
+#- name: copy mule domain
+#  synchronize:
+#    src: /vagrant/artifacts/mule_artifacts/domains
+#    dest: /opt/mule
+#
+#- name: copy mule apps
+#  synchronize:
+#    src: /vagrant/artifacts/mule_artifacts/apps
+#    dest: /opt/mule
 
 - name: copy mule conf
   synchronize:
-    src: /vagrant/artifacts/mule_artifacts/conf
+    src: artifacts/mule_artifacts/conf
     dest: /opt/mule
