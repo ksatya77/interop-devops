@@ -153,28 +153,28 @@
 #          SIDE_SERVICE: 'central-ledger'
 #      become: true
 
-    - name: start central-ledger-admin
-      docker_container:
-        name: central-ledger-admin
-        image: mojaloop/central-ledger-admin:{{v_central_ledger_admin}}
-        state: started
-        restart_policy: always
-        networks:
-          - name: ML_SWITCH_NET
-        log_driver: syslog
-        log_options:
-          syslog-address: 'tcp://{{ log_ip }}:514'
-          syslog-facility: daemon
-          tag: central-ledger-admin
-        ports: 3004:3001
-        env:
-          CLEDG_DATABASE_URI: 'postgres://central_ledger:cVq8iFqaLuHy8jjKuA@{{ worker_host }}:5432/central_ledger'
-          CLEDG_ENABLE_BASIC_AUTH: 'true'
-          CLEDG_EXPIRES_TIMEOUT: '1800000'
-          CLEDG_HOSTNAME: 'http://{{ worker_host }}:3002'
-          CLEDG_SIDECAR__HOST: 'forensic-logging-sidecar2'
-          CLEDG_SIDECAR__DISABLED: 'true'
-      become: true
+#    - name: start central-ledger-admin
+#      docker_container:
+#        name: central-ledger-admin
+#        image: mojaloop/central-ledger-admin:{{v_central_ledger_admin}}
+#        state: started
+#        restart_policy: always
+#        networks:
+#          - name: ML_SWITCH_NET
+#        log_driver: syslog
+#        log_options:
+#          syslog-address: 'tcp://{{ log_ip }}:514'
+#          syslog-facility: daemon
+#          tag: central-ledger-admin
+#        ports: 3004:3001
+#        env:
+#          CLEDG_DATABASE_URI: 'postgres://central_ledger:cVq8iFqaLuHy8jjKuA@{{ worker_host }}:5432/central_ledger'
+#          CLEDG_ENABLE_BASIC_AUTH: 'true'
+#          CLEDG_EXPIRES_TIMEOUT: '1800000'
+#          CLEDG_HOSTNAME: 'http://{{ worker_host }}:3002'
+#          CLEDG_SIDECAR__HOST: 'forensic-logging-sidecar2'
+#          CLEDG_SIDECAR__DISABLED: 'true'
+#      become: true
 
     - name: start central-end-user-registry
       docker_container:

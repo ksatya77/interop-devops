@@ -136,18 +136,18 @@
   roles:
     - role: request_data_ec2
 
-- name:  Install ILP components
-  hosts: dfsps
-  tags: ilp
-  roles:
-    - role: ilp
-      env_path: env/{{ env }}
-      log_ip: 172.17.0.1
-      switch_host_name: '{{ hostvars.switch1.ec2_facts.public_dns_name }}'
-      ilp_host_name: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
-      ilp_base_url: 'http://{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
-      ilp_address_neighborhood: 'levelone'
-      ilp_central_ledger_prefix: "levelone.ist."
+#- name:  Install ILP components
+#  hosts: dfsps
+#  tags: ilp
+#  roles:
+#    - role: ilp
+#      env_path: env/{{ env }}
+#      log_ip: 172.17.0.1
+#      switch_host_name: '{{ hostvars.switch1.ec2_facts.public_dns_name }}'
+#      ilp_host_name: '{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+#      ilp_base_url: 'http://{{ hostvars[inventory_hostname].ec2_facts.public_dns_name }}'
+#      ilp_address_neighborhood: 'levelone'
+#      ilp_central_ledger_prefix: "levelone.ist."
 
 - name:  Install ELK stack
   hosts: mgmt
