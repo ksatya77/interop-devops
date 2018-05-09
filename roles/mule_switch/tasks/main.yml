@@ -39,8 +39,8 @@
     login_password: postgres
     db: mojaloop
     name: mojaloop
-    password: 0f44a46921c79f9e179e9947f5fb6bf3
-    encrypted: yes
+    password: mojaloop
+    encrypted: no
 
 - postgresql_schema:
     login_host: '{{ worker_host }}'
@@ -51,10 +51,15 @@
     database: mojaloop
     owner: mojaloop
 
-#- name: Run psql
-#  shell: create_table_switch.participant_fsp_mapping.sh
-#  register: result
-#  changed_when: "'Table created' in result.stdout"
+- name: Create table participant_fsp_mapping
+  shell: PGPASSWORD=mojaloop psql -U mojaloop -h 127.0.0.1 -p 8102 -c "CREATE TABLE mojaloop.switch.participant_fsp_mapping (uuid uuid NOT NULL, type text COLLATE pg_catalog."default", id text COLLATE pg_catalog."default", sub_id text COLLATE pg_catalog."default", fsp_id text COLLATE pg_catalog."default", created_by text COLLATE pg_catalog."default", created_date timestamp with time zone DEFAULT now(), updated_by text COLLATE pg_catalog."default", updated_date timestamp with time zone DEFAULT now(), CONSTRAINT participant_fsp_mapping_pkey PRIMARY KEY (uuid)) WITH ( OIDS = FALSE) TABLESPACE pg_default;"
+  register: result
+  changed_when: "'CREATE TABLE' in result.stdout"
+
+- name: Create table fsp_details
+  shell: PGPASSWORD=mojaloop psql -U mojaloop -h 127.0.0.1 -p 8102 -c "CREATE TABLE mojaloop.switch.fsp_details (fsp_id text COLLATE pg_catalog."default" NOT NULL, callback_url text COLLATE pg_catalog."default", connector_port text COLLATE pg_catalog."default", CONSTRAINT fsp_details_pkey PRIMARY KEY (fsp_id)) WITH (OIDS = FALSE) TABLESPACE pg_default;"
+  register: result
+  changed_when: "'CREATE TABLE' in result.stdout"
 
 - name: Start interop-routing
   become: true
@@ -69,6 +74,8 @@
       syslog-address: 'tcp://{{ log_ip }}:514'
       syslog-facility: daemon
       tag: interop-routing
+    volumes:
+      - '/home/ubuntu/db_csv:/root'
     ports:
       - "8088:8088"
     env:
@@ -76,9 +83,9 @@
       MAX_JVM_MEMORY: '256'
       ROUTING_SERVICE_HOST: '0.0.0.0'
       ROUTING_SERVICE_PORT: '8088'
-      SWITCH_SERVICE_HOST: '0.0.0.0'
+      SWITCH_SERVICE_HOST: '{{ worker_host }}'
       SWITCH_SERVICE_PORT: '8089'
-      ACCOUNT_LOOKUP_SERVICE_HOST: '0.0.0.0'
+      ACCOUNT_LOOKUP_SERVICE_HOST: '{{ worker_host }}'
       ACCOUNT_LOOKUP_SERVICE_PORT: '8090'
 
 - name: Start interop-switch
@@ -96,15 +103,17 @@
       syslog-address: 'tcp://{{ log_ip }}:514'
       syslog-facility: daemon
       tag: interop-switch
+    volumes:
+      - '/home/ubuntu/db_csv:/root'
     ports:
-      - "8089:8088"
+      - "8089:8089"
     env:
       SERVICE_8088_NAME: 'interop-switch'
       MAX_JVM_MEMORY: '256'
       SWITCH_SERVICE_HOST: '0.0.0.0'
       SWITCH_SERVICE_PORT: '8089'
-      ACCOUNT_LOOKUP_SERVICE_HOST: '0.0.0.0'
-      ACCOUNT_LOOKUP_SERVICE_PORT: '9000'
+      ACCOUNT_LOOKUP_SERVICE_HOST: '{{ worker_host }}'
+      ACCOUNT_LOOKUP_SERVICE_PORT: '8090'
 
 - name: Start interop-account-lookup
   become: true
@@ -121,13 +130,25 @@
       syslog-address: 'tcp://{{ log_ip }}:514'
       syslog-facility: daemon
       tag: interop-account-lookup
+    volumes:
+      - '/home/ubuntu/db_csv:/root'
     ports:
-      - "8090:8088"
+      - "8090:8090"
     env:
       SERVICE_8088_NAME: 'interop-account-lookup'
       MAX_JVM_MEMORY: '256'
-      SWITCH_SERVICE_HOST: '0.0.0.0'
-      SWITCH_SERVICE_PORT: '9000'
-      PSQL_HOST: 'localhost'
+      ACCOUNT_LOOKUP_SERVICE_HOST: '0.0.0.0'
+      ACCOUNT_LOOKUP_SERVICE_PORT: '8090'
+      SWITCH_SERVICE_HOST: '{{ worker_host }}'
+      SWITCH_SERVICE_PORT: '8089'
+      PSQL_HOST: '{{ worker_host }}'
       PSQL_PORT: '8102'
+
+- name:  Create fsp_id_to_url_db.csv
+  blockinfile:
+    create: yes
+    dest: "/home/ubuntu/db_csv/fsp_id_to_url_db.csv"
+    block: |
+      dfsp1;https://{{ hostvars.dfsp1.ansible_host }}:8443/scheme/adapter/ml-dfsp/v1
+      dfsp2;https://{{ hostvars.dfsp2.ansible_host }}:8443/scheme/adapter/ml-dfsp/v1
 

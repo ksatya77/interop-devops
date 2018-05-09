@@ -3,34 +3,34 @@
 #    delegate_to: localhost
 
 # SWITCH Account Setup
-#- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp1\",\"shortName\": \"dfsp1\",\"providerUrl\": \"http://{{ hostvars.dfsp1.ansible_host }}:8088/scheme/adapter/v1\"}' http://{{ hostvars.switch1.ansible_host }}:8088/interop/switch/v1/participants/switch/v1/register"
-#  register: output
-#
-#- debug:
-#    var: output.stdout
-#
-#- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp2\",\"shortName\": \"dfsp2\",\"providerUrl\": \"http://{{ hostvars.dfsp2.ansible_host }}:8088/scheme/adapter/v1\"}' http://{{ hostvars.switch1.ansible_host }}:8088/directory/v1/commands/register"
-#  register: output
-#
-#- debug:
-#    var: output.stdout
-#
-#- shell: "curl -X POST http://{{ hostvars.switch1.ansible_host }}:3002/accounts -H \"Authorization:Basic TGVkZ2VyTmFtZTpMZWRnZXJQYXNzd29yZA==\" -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp1\",\"password\":\"dfsp1\",\"emailAddress\":\"dfsp1@test.com\"}'"
-##- shell: "curl -X POST http://{{ hostvars.switch1.ansible_host }}:3004/accounts -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp1\",\"password\":\"dfsp1\",\"emailAddress\":\"dfsp1@test.com\"}'"
-#  register: output
-#
-#- debug:
-#    var: output.stdout
-#
-#- shell: "curl -X POST http://{{ hostvars.switch1.ansible_host }}:3002/accounts -H \"Authorization:Basic TGVkZ2VyTmFtZTpMZWRnZXJQYXNzd29yZA==\" -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp2\",\"password\":\"dfsp2\",\"emailAddress\":\"dfsp2@test.com\"}'"
-##- shell: "curl -X POST http://{{ hostvars.switch1.ansible_host }}:3004/accounts -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp2\",\"password\":\"dfsp2\",\"emailAddress\":\"dfsp2@test.com\"}'"
-#  register: output
-#
-#- debug:
-#    var: output.stdout
-#
-#- pause:
-#    seconds: 30
+- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp1\",\"shortName\": \"dfsp1\",\"providerUrl\": \"http://{{ hostvars.dfsp1.ansible_host }}:8088/scheme/adapter/v1\"}' http://{{ hostvars.switch1.ansible_host }}:8088/interop/switch/v1/participants/switch/v1/register"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -X POST -H \"Authorization:Basic YWRtaW46YWRtaW4=\" --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{\"name\": \"dfsp2\",\"shortName\": \"dfsp2\",\"providerUrl\": \"http://{{ hostvars.dfsp2.ansible_host }}:8088/scheme/adapter/v1\"}' http://{{ hostvars.switch1.ansible_host }}:8088/interop/switch/v1/participants/switch/v1/register"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -X POST http://{{ hostvars.switch1.ansible_host }}:3002/accounts -H \"Authorization:Basic TGVkZ2VyTmFtZTpMZWRnZXJQYXNzd29yZA==\" -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp1\",\"password\":\"dfsp1\",\"emailAddress\":\"dfsp1@test.com\"}'"
+#- shell: "curl -X POST http://{{ hostvars.switch1.ansible_host }}:3004/accounts -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp1\",\"password\":\"dfsp1\",\"emailAddress\":\"dfsp1@test.com\"}'"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- shell: "curl -X POST http://{{ hostvars.switch1.ansible_host }}:3002/accounts -H \"Authorization:Basic TGVkZ2VyTmFtZTpMZWRnZXJQYXNzd29yZA==\" -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp2\",\"password\":\"dfsp2\",\"emailAddress\":\"dfsp2@test.com\"}'"
+#- shell: "curl -X POST http://{{ hostvars.switch1.ansible_host }}:3004/accounts -H \"Content-Type: application/json\" -d '{\"name\":\"dfsp2\",\"password\":\"dfsp2\",\"emailAddress\":\"dfsp2@test.com\"}'"
+  register: output
+
+- debug:
+    var: output.stdout
+
+- pause:
+    seconds: 30
 
 # DFSP User Setup
 
