@@ -1,4 +1,5 @@
 v_central_directory: v1.1
+v_mock_pathfinder: snapshot
 v_central_ledger: v1.1.8-base
 v_central_ledger_admin: latest
 v_central_end_user_registry: snapshot

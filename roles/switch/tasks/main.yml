@@ -50,6 +50,7 @@
         - { name: central_end_user_registry, passwd: "{{ ceur_pass }}" }
         - { name: sidecar, passwd: "{{ sidecar_pass }}" }
         - { name: central_kms, passwd: "{{ ckms_pass }}" }
+        - { name: mock_pathfinder, passwd: "{{ mopf_pass }}" }
 
     - name: Create central dbs
       postgresql_db:
@@ -66,6 +67,7 @@
         - { name: central_end_user_registry, passwd: "{{ ceur_pass }}" }
         - { name: sidecar, passwd: "{{ sidecar_pass }}" }
         - { name: central_kms, passwd: "{{ ckms_pass }}" }
+        - { name: mock_pathfinder, passwd: "{{ mopf_pass }}" }
 
     ## Dwolla Docker Images
     - name: start central-directory
@@ -86,9 +88,31 @@
           CDIR_DATABASE_URI: 'postgres://central_directory:cVq8iFqaLuHy8jjKuA@{{ worker_host }}:5432/central_directory'
           CDIR_HOSTNAME: 'http://{{ worker_host }}:3000'
           CDIR_END_USER_REGISTRY_URL: 'http://{{ worker_host }}:3001'
+          CDIR_PATHFINDER__PROVISIONING__ADDRESS: 'http://{{ worker_host }}:8080/nrs-pi/services/SIPIX/SendRequest'
           CDIR_DEFAULT_DFSP: 'The second DFSP'
           CDIR_ADMIN_KEY: 'admin'
           CDIR_ADMIN_SECRET: 'admin'
+      become: true
+
+    ## Dwolla Docker Images
+    - name: start mock-pathfinder
+      docker_container:
+        name: mock-pathfinder
+        image: mojaloop/mock-pathfinder:{{v_mock_pathfinder}}
+        state: started
+        restart_policy: always
+        networks:
+          - name: ML_SWITCH_NET
+        log_driver: syslog
+        log_options:
+          syslog-address: 'tcp://{{ log_ip }}:514'
+          syslog-facility: daemon
+          tag: mock_pathfinder
+        ports:
+          - '8080:8080'
+          - '15353:15353'
+        env:
+          MOPF_DATABASE_URI: 'postgres://mock_pathfinder:cVq8iFqaLuHy8jjKuA@{{ worker_host }}:5432/mock_pathfinder'
       become: true
 
 #    - name: start forensic-logging-sidecar1
