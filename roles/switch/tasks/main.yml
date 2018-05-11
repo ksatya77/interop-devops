@@ -51,6 +51,7 @@
         - { name: sidecar, passwd: "{{ sidecar_pass }}" }
         - { name: central_kms, passwd: "{{ ckms_pass }}" }
         - { name: mock_pathfinder, passwd: "{{ mopf_pass }}" }
+        - { name: interop_switch, passwd: "{{ interop_switch_pass }}" }
 
     - name: Create central dbs
       postgresql_db:
@@ -68,6 +69,7 @@
         - { name: sidecar, passwd: "{{ sidecar_pass }}" }
         - { name: central_kms, passwd: "{{ ckms_pass }}" }
         - { name: mock_pathfinder, passwd: "{{ mopf_pass }}" }
+        - { name: interop_switch, passwd: "{{ interop_switch_pass }}" }
 
     ## Dwolla Docker Images
     - name: start central-directory
