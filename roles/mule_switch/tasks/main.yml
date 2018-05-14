@@ -98,12 +98,19 @@
 #- debug:
 #    var: output.stdout
 
-- shell: "curl -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"fspId\":\"{{ item.name }}\", \"baseUrl\":\"http://{{ item.dfsp_host }}:8443/scheme/adapter/ml-dfsp/v1\", \"connectorPort\": \"{{ item.port }}\"}' http://{{ worker_host }}:8088/interop/switch/v1/fsp"
+- name: Register FSP(s) with the switch
+  shell: "curl -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"fspId\":\"dfps1\", \"baseUrl\":\"http://{{ hostvars.dfsp1.ansible_host }}:8443/scheme/adapter/ml-dfsp/v1\", \"connectorPort\": \"8091\"}' http://{{ worker_host }}:8090/account/lookup/v1/fsp"
   register: output
-  with_items:
-    - {name: 'dfsp1', port: '8091', dfsp_host: '{{ hostvars.dfsp1.ansible_host }}'}
-    - {name: 'dfsp2', port: '8092', dfsp_host: '{{ hostvars.dfsp2.ansible_host }}'}
-
 
 - debug:
     var: output.stdout
+
+- shell: "curl -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"fspId\":\"dfps2\", \"baseUrl\":\"http://{{ hostvars.dfsp2.ansible_host }}:8443/scheme/adapter/ml-dfsp/v1\", \"connectorPort\": \"8092\"}' http://{{ worker_host }}:8090/account/lookup/v1/fsp"
+  register: output
+
+- debug:
+    var: output.stdout
+
+#  with_items:
+#    - {name: 'dfsp1', port: '8091', dfsp_host: '{{ hostvars.dfsp1.ansible_host }}'}
+#    - {name: 'dfsp2', port: '8092', dfsp_host: '{{ hostvars.dfsp2.ansible_host }}'}
