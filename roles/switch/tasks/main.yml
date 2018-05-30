@@ -112,7 +112,7 @@
           tag: mock_pathfinder
         ports:
           - '8080:8080'
-          - '15353:15353'
+          - '15353:15353/udp'
         env:
           MOPF_DATABASE_URI: 'postgres://mock_pathfinder:cVq8iFqaLuHy8jjKuA@{{ worker_host }}:5432/mock_pathfinder'
       become: true
