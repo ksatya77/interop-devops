@@ -91,6 +91,7 @@
           CDIR_HOSTNAME: 'http://{{ worker_host }}:3000'
           CDIR_END_USER_REGISTRY_URL: 'http://{{ worker_host }}:3001'
           CDIR_PATHFINDER__PROVISIONING__ADDRESS: 'http://{{ worker_host }}:8080/nrs-pi/services/SIPIX/SendRequest'
+          CDIR_PATHFINDER__QUERY__ADDRESS: '{{ worker_host }}'
           CDIR_DEFAULT_DFSP: 'The second DFSP'
           CDIR_ADMIN_KEY: 'admin'
           CDIR_ADMIN_SECRET: 'admin'
